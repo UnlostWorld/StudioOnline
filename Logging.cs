@@ -18,7 +18,6 @@ public static class Logging
 		Formatter formatter = new();
 
 		Configuration = new LoggerConfiguration();
-		Configuration.Enrich.With<StackEnricher>();
 		Configuration.WriteTo.Debug(formatter);
 		Configuration.WriteTo.Console(formatter);
 
@@ -76,16 +75,5 @@ public class Formatter : ITextFormatter
 		}
 
 		output.WriteLine();
-	}
-}
-
-public class StackEnricher : ILogEventEnricher
-{
-	public void Enrich(LogEvent logEvent, ILogEventPropertyFactory propertyFactory)
-	{
-		if (logEvent.Level >= LogEventLevel.Error && logEvent.Exception == null)
-		{
-			logEvent.AddOrUpdateProperty(propertyFactory.CreateProperty("StackTrace", new StackTrace(7, true)));
-		}
 	}
 }

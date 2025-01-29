@@ -3,14 +3,16 @@
 using EmbedIO;
 using EmbedIO.Routing;
 using EmbedIO.WebApi;
+using System.IO;
 using System.Threading.Tasks;
 
 public class TestController : WebApiController
 {
 	[Route(HttpVerbs.Get, "/test")]
-	public Task PostData()
+	public Task Test()
 	{
-		Swan.Logging.Logger.Info("Hello World!");
+		using StreamWriter writer = new(this.Response.OutputStream);
+		writer.WriteLine("Hello from the unlost world");
 		return Task.CompletedTask;
 	}
 }
