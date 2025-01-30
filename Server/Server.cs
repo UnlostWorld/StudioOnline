@@ -24,7 +24,7 @@ public class Server : IDisposable
 		this.server.StateChanged += (s, e) => Swan.Logging.Logger.Info($"WebServer New State - {e.NewState}");
 		this.server.WithLocalSessionManager();
 
-		this.server.WithWebApi("/api", m => m.WithController<TestController>());
+		this.server.WithWebApi("/api", m => m.WithController<ErrorReportingController>());
 
 		Logging.Information("Starting Server");
 		this.server.RunAsync();

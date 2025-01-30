@@ -3,8 +3,8 @@ using System;
 
 public class Program
 {
-	private static readonly Database Database = new();
-	private static readonly Server Server = new();
+	public static readonly Database Database = new();
+	public static readonly Server Server = new();
 
 	public static void Main(string[] args)
 	{

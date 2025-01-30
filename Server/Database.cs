@@ -1,7 +1,6 @@
 ﻿namespace StudioServer;
 
 using MongoDB.Bson;
-using MongoDB.Bson.Serialization.Attributes;
 using MongoDB.Driver;
 using System;
 
@@ -19,21 +18,18 @@ public class Database
 		}
 
 		this.client = new MongoClient(connectionString);
-
-		IMongoCollection<BsonDocument> col = this.client.GetDatabase("StudioAnalytics").GetCollection<BsonDocument>("Analytics");
-
-		Hit hit = new();
-
-		col.InsertOne(hit.ToBsonDocument());
-
-		Logging.Information($"{col}");
 	}
-}
 
-public class Hit
-{
-	public ObjectId Id { get; set; }
+	public IMongoCollection<BsonDocument> GetCollection(string database, string collection)
+	{
+		if (this.client == null)
+			throw new Exception("Database not connected");
 
-	[BsonElement("date")]
-	public DateTime Date { get; set; } = DateTime.UtcNow;
+		return this.client.GetDatabase(database).GetCollection<BsonDocument>(collection);
+	}
+
+	public class EntryBase
+	{
+		public ObjectId Id { get; set; }
+	}
 }
