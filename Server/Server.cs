@@ -5,8 +5,10 @@ using EmbedIO.WebApi;
 using StudioServer.Api;
 using System;
 
-public class Server
+public class Server : IDisposable
 {
+	private WebServer? server;
+
 	public void Start()
 	{
 		Swan.Logging.Logger.UnregisterLogger<Swan.Logging.ConsoleLogger>();
@@ -18,14 +20,19 @@ public class Server
 		options.WithUrlPrefix(url);
 		options.WithMode(HttpListenerMode.EmbedIO);
 
-		using WebServer server = new(options);
-		server.StateChanged += (s, e) => Swan.Logging.Logger.Info($"WebServer New State - {e.NewState}");
-		server.WithLocalSessionManager();
+		this.server = new(options);
+		this.server.StateChanged += (s, e) => Swan.Logging.Logger.Info($"WebServer New State - {e.NewState}");
+		this.server.WithLocalSessionManager();
 
-		server.WithWebApi("/api", m => m.WithController<TestController>());
+		this.server.WithWebApi("/api", m => m.WithController<TestController>());
 
 		Logging.Information("Starting Server");
-		server.RunAsync();
+		this.server.RunAsync();
+	}
+
+	public void Dispose()
+	{
+		this.server?.Dispose();
 	}
 }
 

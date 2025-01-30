@@ -25,4 +25,8 @@
 		</PackageReference>
 	</ItemGroup>
 
+	<ItemGroup>
+	  <ProjectReference Include="..\Client\StudioServer.Client.csproj" />
+	</ItemGroup>
+
 </Project>

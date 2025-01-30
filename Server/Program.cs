@@ -13,7 +13,15 @@ public class Program
 		Database.Connect();
 		Server.Start();
 
-		Logging.Information("StudioServer started. Press any key to terminate.");
-		Console.ReadKey(true);
+		Logging.Information("StudioServer started. Press 'Q' to terminate.");
+
+		ConsoleKeyInfo info;
+		do
+		{
+			info = Console.ReadKey(true);
+		}
+		while (info.Key != ConsoleKey.Q);
+
+		Server.Dispose();
 	}
 }
