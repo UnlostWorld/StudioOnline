@@ -1,7 +1,6 @@
 ﻿namespace StudioServer;
 
 using StudioServer.Chat;
-using StudioServer.Client;
 using System;
 using System.Threading.Tasks;
 
