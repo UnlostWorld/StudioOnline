@@ -19,6 +19,8 @@ public class ErrorReportingController : ApiController
 		entry.ShortCode = ShortCodeGenerator.Generate();
 		await collection.InsertOneAsync(entry.ToBsonDocument());
 
+		await Chat.ErrorReports.Report(data, entry.ShortCode);
+
 		return entry.ShortCode;
 	}
 

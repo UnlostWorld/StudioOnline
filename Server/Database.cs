@@ -2,18 +2,28 @@
 
 using MongoDB.Bson;
 using MongoDB.Driver;
+using Serilog;
 using System;
 
 public class Database
 {
+	public ILogger Log;
+
 	private MongoClient? client;
+
+	public Database()
+	{
+		this.Log = Logging.ForContext<Database>();
+	}
+
+	public Configuration Configuration => Program.Configuration;
 
 	public void Connect()
 	{
-		var connectionString = Environment.GetEnvironmentVariable("MONGODB_URI");
+		string? connectionString = this.Configuration.Current.DatabaseURI;
 		if (connectionString == null)
 		{
-			Console.WriteLine("You must set your 'MONGODB_URI' environment variable");
+			this.Log.Error("No database URI set");
 			return;
 		}
 

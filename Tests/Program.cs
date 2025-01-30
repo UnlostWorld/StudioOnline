@@ -4,7 +4,8 @@ using StudioServer.Client;
 try
 {
 	ErrorReport report = new();
-	report.Message = "Test!";
+	report.Message = new NotSupportedException().Message;
+	report.LogFile = File.ReadAllText("test.log");
 	string shortCode = await report.Send();
 	Console.WriteLine($"> {shortCode}");
 
