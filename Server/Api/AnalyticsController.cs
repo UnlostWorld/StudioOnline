@@ -19,7 +19,7 @@ public class AnalyticsController : ApiController
 		var collection = this.Database.GetCollection("StudioServer-Analytics", "Events");
 
 		AnalyticsEntry entry = new();
-		entry.Event = data.EventName;
+		entry.Event = data.Event;
 		entry.Data = data.EventData;
 		entry.Date = DateTime.UtcNow;
 		await collection.InsertOneAsync(entry.ToBsonDocument());
@@ -32,7 +32,7 @@ public class AnalyticsController : ApiController
 
 	public class AnalyticsEntry : Database.EntryBase
 	{
-		public string? Event { get; set; }
+		public AnalyticEvents Event { get; set; }
 		public string? Data { get; set; }
 		public DateTime? Date { get; set; }
 	}

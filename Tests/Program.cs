@@ -22,7 +22,7 @@ try
 	Console.WriteLine($"> {shortCode}");*/
 
 	AnalyticEvent evt = new();
-	evt.EventName = "Startup";
+	evt.Event = AnalyticEvents.StudioStarted;
 	await evt.Send();
 
 }
