@@ -1,28 +1,25 @@
+namespace StudioMarketplace.Pages;
+
 using System.Diagnostics;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 
-namespace StudioMarketplace.Pages
+[ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]
+[IgnoreAntiforgeryToken]
+public class ErrorModel : PageModel
 {
-    [ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]
-    [IgnoreAntiforgeryToken]
-    public class ErrorModel : PageModel
-    {
-        public string? RequestId { get; set; }
+	protected readonly ILogger<ErrorModel> Log;
 
-        public bool ShowRequestId => !string.IsNullOrEmpty(RequestId);
+	public ErrorModel(ILogger<ErrorModel> logger)
+	{
+		this.Log = logger;
+	}
 
-        private readonly ILogger<ErrorModel> _logger;
+	public string? RequestId { get; set; }
+	public bool ShowRequestId => !string.IsNullOrEmpty(this.RequestId);
 
-        public ErrorModel(ILogger<ErrorModel> logger)
-        {
-            _logger = logger;
-        }
-
-        public void OnGet()
-        {
-            RequestId = Activity.Current?.Id ?? HttpContext.TraceIdentifier;
-        }
-    }
-
+	public void OnGet()
+	{
+		this.RequestId = Activity.Current?.Id ?? this.HttpContext.TraceIdentifier;
+	}
 }
