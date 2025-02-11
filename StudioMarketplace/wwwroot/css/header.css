@@ -16,22 +16,12 @@ header li
 	float: left;
 }
 
-header .active
-{
-	color: var(--TrimBrush);
-}
-
 header li a
 {
+	margin: 0px;
 	display: block;
 	text-align: center;
 	padding: 14px 16px;
 	text-decoration: none;
 	color: inherit;
 }
-
-header li a:hover
-{
-	background-color: var(--ControlHighlightBrush);
-}
-
