@@ -8,7 +8,7 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\Client\StudioServer.Client.csproj" />
+    <ProjectReference Include="..\StudioServer.Client\StudioServer.Client.csproj" />
   </ItemGroup>
 
 </Project>

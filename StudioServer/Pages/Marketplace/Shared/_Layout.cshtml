@@ -3,7 +3,7 @@
 <head>
 	<meta charset="utf-8" />
 	<meta name="viewport" content="width=device-width, initial-scale=1.0" />
-	<title>@ViewData["Title"]</title>
+	<title>@ViewData["Title"] - Studio Marketplace</title>
 	<script type="importmap"></script>
 	<link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
 	<link rel="stylesheet" href="~/css/header.css" asp-append-version="true" />
@@ -15,10 +15,13 @@
 				<div>
 					<ul>
 						<li>
-							Studio Fourteen
+							Studio Marketplace
 						</li>
 						<li class="button @Html.IsSelected("/Index")">
-							<a asp-area="" asp-page="/Index">Home</a>
+							<a href="./Index">Home</a>
+						</li>
+						<li class="button @Html.IsSelected("/Privacy")">
+							<a href="./Privacy">Privacy</a>
 						</li>
 					</ul>
 				</div>
@@ -31,8 +34,7 @@
 		</main>
 	</div>
 
-	<footer>
-		<p>Looking for the <a href="@Html.GetSubdomain("marketplace")">marketplace</a>?</p>
+	<footer class="border-top footer text-muted">
 		<div class="container">&copy; 2025 - Unlost World</div>
 	</footer>
 

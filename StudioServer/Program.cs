@@ -4,6 +4,7 @@ using Microsoft.AspNetCore.Builder;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using StudioServer.Chat;
+using StudioServer.Utilities;
 
 public class Program
 {
@@ -11,6 +12,7 @@ public class Program
 	{
 		WebApplicationBuilder builder = WebApplication.CreateBuilder(args);
 		builder.Services.AddRazorPages();
+
 		builder.Services.AddControllers();
 		builder.Services.AddScoped<IDiscordService, DiscordService>();
 
@@ -22,6 +24,8 @@ public class Program
 			app.UseExceptionHandler("/Error");
 			app.UseHsts();
 		}
+
+		app.RouteSubdomain("marketplace", "/Marketplace");
 
 		app.UseRouting();
 		app.UseAuthorization();

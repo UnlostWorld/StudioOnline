@@ -1,5 +1,6 @@
 ﻿// See https://aka.ms/new-console-template for more information
 using StudioServer.Client;
+using StudioServer.Client.Analytics;
 
 Console.WriteLine("Select a Server:");
 Console.WriteLine("1) unlostworld.duckdns.org");
@@ -8,7 +9,7 @@ Console.WriteLine("2) localhost");
 string? selection = Console.ReadLine();
 if (selection == "2")
 {
-	StudioServer.Client.StudioServer.Url = "https://127.0.0.1:7200/api/";
+	StudioServerApi.Url = "https://127.0.0.1:7200/api/";
 }
 
 Console.WriteLine("Running Tests...");
