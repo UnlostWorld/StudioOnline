@@ -1,0 +1,49 @@
+:root
+{
+    --ForegroundBrush: #ECECEC;
+    --ForegroundLightBrush: #838383;
+    --BackgroundBrush: #222222;
+    --BackgroundLightBrush: #333333;
+    --TrimBrush: #FF1493;
+    --ControlBackgroundBrush: #171717;
+    --ControlHighlightBrush: #343434;
+    --ControlForegroundHighlightBrush: #ECECEC;
+    --ControlBackgroundSelectedBrush: #222222;
+    background-color: var(--BackgroundBrush);
+    --bs-border-color: var(--BackgroundLightBrush);
+}
+
+html
+{
+    font-family: Helvetica, sans-serif;
+    font-size: 14px;
+    color: var(--ForegroundLightBrush);
+    position: relative;
+    min-height: 100%;
+}
+
+body
+{
+    margin: 0px;
+    margin-bottom: 60px;
+    background-color: var(--BackgroundBrush);
+}
+
+.button
+{
+    color: var(--ForegroundLightBrush);
+    margin: 2px;
+    border-radius: 6px;
+    background-color: transparent;
+    transition: background-color .15s ease-in;
+}
+
+.button:hover
+{
+    background-color: var(--ControlHighlightBrush);
+}
+
+.button.active
+{
+    color: var(--TrimBrush);
+}

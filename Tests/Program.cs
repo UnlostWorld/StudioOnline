@@ -8,22 +8,22 @@ Console.WriteLine("2) localhost");
 string? selection = Console.ReadLine();
 if (selection == "2")
 {
-	StudioServer.Client.StudioServer.Url = "http://127.0.0.1:5202/api/";
+	StudioServer.Client.StudioServer.Url = "https://127.0.0.1:7200/api/";
 }
 
 Console.WriteLine("Running Tests...");
 
 try
 {
-	/*ErrorReport report = new();
+	ErrorReport report = new();
 	report.Message = new NotSupportedException().Message;
-	report.LogFile = File.ReadAllText("test.log");
+	////report.LogFile = File.ReadAllText("test.log");
 	string shortCode = await report.Send();
-	Console.WriteLine($"> {shortCode}");*/
+	Console.WriteLine($"> {shortCode}");
 
-	AnalyticEvent evt = new();
+	/*AnalyticEvent evt = new();
 	evt.Event = AnalyticEvents.StudioStarted;
-	await evt.Send();
+	await evt.Send();*/
 
 }
 catch(Exception ex)

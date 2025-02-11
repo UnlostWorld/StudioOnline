@@ -1,0 +1,27 @@
+﻿header
+{
+	background-color: var(--ControlBackgroundBrush);
+}
+
+header ul
+{
+	list-style-type: none;
+	overflow: hidden;
+	margin: 0;
+	padding: 0;
+}
+
+header li
+{
+	float: left;
+}
+
+header li a
+{
+	margin: 0px;
+	display: block;
+	text-align: center;
+	padding: 14px 16px;
+	text-decoration: none;
+	color: inherit;
+}
