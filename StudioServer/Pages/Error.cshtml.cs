@@ -1,4 +1,4 @@
-namespace StudioMarketplace.Pages;
+namespace StudioServer.Pages;
 
 using System.Diagnostics;
 using Microsoft.AspNetCore.Mvc;

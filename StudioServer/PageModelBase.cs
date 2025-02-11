@@ -1,4 +1,4 @@
-﻿namespace StudioMarketplace;
+﻿namespace StudioServer;
 
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.Extensions.Logging;

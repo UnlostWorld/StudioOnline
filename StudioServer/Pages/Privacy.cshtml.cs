@@ -1,4 +1,4 @@
-﻿namespace StudioMarketplace.Pages;
+﻿namespace StudioServer.Pages;
 
 using Microsoft.Extensions.Logging;
 

@@ -1,3 +1,6 @@
 [submodule "Client"]
 	path = Client
 	url = https://github.com/UnlostWorld/StudioServer.Client
+[submodule "StudioServer.Client"]
+	path = StudioServer.Client
+	url = https://github.com/UnlostWorld/StudioServer.Client
