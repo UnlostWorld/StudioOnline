@@ -12,26 +12,26 @@
 	<header>
 		<nav>
 			<div>
-				<div>
-					<ul>
-						<li>
-							Studio Fourteen
-						</li>
-						<li class="button @Html.IsSelected("/Index")">
-							<a asp-area="" asp-page="/Index">Home</a>
-						</li>
-					</ul>
-				</div>
+				<ul>
+					<li>
+						Studio Fourteen
+					</li>
+					<li class="button @Html.IsSelected("/Index")">
+						<a asp-area="" asp-page="/Index">Home</a>
+					</li>
+				</ul>
+
+				<partial name="_LoginPartial" />
 			</div>
 		</nav>
 	</header>
 	<div class="container">
-		<main role="main" class="pb-3">
+		<main role="main" class="content">
 			@RenderBody()
 		</main>
 	</div>
 
-	<footer>
+	<footer class="content">
 		<p>Looking for the <a href="@Html.GetSubdomain("marketplace")">marketplace</a>?</p>
 		<div class="container">&copy; 2025 - Unlost World</div>
 	</footer>

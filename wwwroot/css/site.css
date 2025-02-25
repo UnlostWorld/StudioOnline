@@ -1,5 +1,7 @@
 :root
 {
+	--MaxWidth: 1024px;
+
     --ForegroundBrush: #ECECEC;
     --ForegroundLightBrush: #838383;
     --BackgroundBrush: #222222;
@@ -9,8 +11,9 @@
     --ControlHighlightBrush: #343434;
     --ControlForegroundHighlightBrush: #ECECEC;
     --ControlBackgroundSelectedBrush: #222222;
-    background-color: var(--BackgroundBrush);
     --bs-border-color: var(--BackgroundLightBrush);
+
+	background-color: var(--BackgroundBrush);
 }
 
 html
@@ -26,7 +29,14 @@ body
 {
     margin: 0px;
     margin-bottom: 60px;
-    background-color: var(--BackgroundBrush);
+}
+
+.content
+{
+	padding: 10px;
+	margin: auto;
+	max-width: var(--MaxWidth);
+	background-color: var(--BackgroundBrush);
 }
 
 .button

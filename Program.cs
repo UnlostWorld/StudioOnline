@@ -15,21 +15,101 @@
 
 namespace StudioOnline;
 
+using System;
+using System.Collections.Generic;
+using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Builder;
+using Microsoft.AspNetCore.Identity;
+using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Caching.Memory;
+using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
+using Microsoft.Extensions.Primitives;
+using Quartz;
 using StudioOnline.Chat;
 using StudioOnline.Utilities;
+using StudioOnline.Data;
 
 public class Program
 {
 	public static void Main(string[] args)
 	{
 		WebApplicationBuilder builder = WebApplication.CreateBuilder(args);
-		builder.Services.AddRazorPages();
+		var services = builder.Services;
 
-		builder.Services.AddControllers();
-		builder.Services.AddScoped<IDiscordService, DiscordService>();
+		services.AddRazorPages();
+
+		services.AddControllers();
+		services.AddScoped<IDiscordService, DiscordService>();
+
+		// OpenIddict offers native integration with Quartz.NET to perform scheduled tasks
+		// (like pruning orphaned authorizations/tokens from the database) at regular intervals.
+		services.AddQuartz(options =>
+		{
+			options.UseSimpleTypeLoader();
+			options.UseInMemoryStore();
+		});
+
+		// Register the Quartz.NET service and configure it to block shutdown until jobs are complete.
+		services.AddQuartzHostedService(options => options.WaitForJobsToComplete = true);
+
+		services.AddDbContext<ApplicationDbContext>(options =>
+		{
+			options.UseInMemoryDatabase("InMemDb");
+			options.UseOpenIddict();
+		});
+
+		var ident = services.AddDefaultIdentity<IdentityUser>(options =>
+		{
+			options.SignIn.RequireConfirmedAccount = true;
+		});
+
+		ident.AddEntityFrameworkStores<ApplicationDbContext>();
+
+		var openIddict = services.AddOpenIddict();
+		openIddict.AddCore(options =>
+		{
+			options.UseEntityFrameworkCore().UseDbContext<ApplicationDbContext>();
+			options.UseQuartz();
+		});
+
+		openIddict.AddClient(options =>
+		{
+			// Note: this sample only uses the authorization code flow,
+			// but you can enable the other flows if necessary.
+			options.AllowAuthorizationCodeFlow();
+
+			// Register the signing and encryption credentials used to protect
+			// sensitive data like the state tokens produced by OpenIddict.
+			options.AddDevelopmentEncryptionCertificate().AddDevelopmentSigningCertificate();
+
+			// Register the ASP.NET Core host and configure the ASP.NET Core-specific options.
+			var aspnet = options.UseAspNetCore();
+			aspnet.EnableRedirectionEndpointPassthrough();
+			aspnet.DisableTransportSecurityRequirement();
+
+			// Register the System.Net.Http integration.
+			options.UseSystemNetHttp();
+
+			// Register the Web providers integrations.
+			//
+			// Note: to mitigate mix-up attacks, it's recommended to use a unique redirection endpoint
+			// URI per provider, unless all the registered providers support returning a special "iss"
+			// parameter containing their URL as part of authorization responses. For more information,
+			// see https://datatracker.ietf.org/doc/html/draft-ietf-oauth-security-topics#section-4.4.
+			var providers = options.UseWebProviders();
+			providers.AddGitHub(options =>
+			{
+				options.SetClientId("c4ade52327b01ddacff3");
+				options.SetClientSecret("da6bed851b75e317bf6b2cb67013679d9467c122");
+				options.SetRedirectUri("callback/login/github");
+			});
+
+			providers.AddDiscord(options =>
+			{
+			});
+		});
 
 		WebApplication app = builder.Build();
 
@@ -43,6 +123,7 @@ public class Program
 		app.RouteSubdomain("marketplace", "/Marketplace");
 
 		app.UseRouting();
+		app.UseAuthentication();
 		app.UseAuthorization();
 
 		app.MapStaticAssets();
