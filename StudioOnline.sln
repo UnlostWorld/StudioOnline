@@ -3,9 +3,7 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 17
 VisualStudioVersion = 17.12.35707.178
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Tests", "Tests\Tests.csproj", "{86C63411-A9BA-4618-9D2A-C42789897D81}"
-EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "StudioServer", "StudioServer\StudioServer.csproj", "{B699E8AA-1E5D-4271-863A-C493FBE1A779}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "StudioOnline", "StudioOnline.csproj", "{B699E8AA-1E5D-4271-863A-C493FBE1A779}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -13,10 +11,6 @@ Global
 		Release|Any CPU = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(ProjectConfigurationPlatforms) = postSolution
-		{86C63411-A9BA-4618-9D2A-C42789897D81}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{86C63411-A9BA-4618-9D2A-C42789897D81}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{86C63411-A9BA-4618-9D2A-C42789897D81}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{86C63411-A9BA-4618-9D2A-C42789897D81}.Release|Any CPU.Build.0 = Release|Any CPU
 		{B699E8AA-1E5D-4271-863A-C493FBE1A779}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{B699E8AA-1E5D-4271-863A-C493FBE1A779}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{B699E8AA-1E5D-4271-863A-C493FBE1A779}.Release|Any CPU.ActiveCfg = Release|Any CPU
