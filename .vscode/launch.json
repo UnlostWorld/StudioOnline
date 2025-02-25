@@ -1,0 +1,10 @@
+{
+	"configurations": [
+	{
+		"name": "C#: StudioServer Debug",
+		"type": "dotnet",
+		"request": "launch",
+		"projectPath": "${workspaceFolder}/StudioServer/StudioServer.csproj"
+	}
+	]
+}

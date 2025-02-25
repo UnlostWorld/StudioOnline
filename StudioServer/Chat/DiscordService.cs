@@ -5,7 +5,7 @@ using Discord.Net;
 using Discord.WebSocket;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
-using StudioServer.Client.Analytics;
+using StudioServer.Api;
 using System;
 using System.Collections.Generic;
 using System.IO;

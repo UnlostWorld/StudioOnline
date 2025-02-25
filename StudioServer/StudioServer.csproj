@@ -19,9 +19,4 @@
 			<IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
 		</PackageReference>
 	</ItemGroup>
-
-	<ItemGroup>
-	  <ProjectReference Include="..\StudioServer.Client\StudioServer.Client.csproj" />
-	</ItemGroup>
-
 </Project>

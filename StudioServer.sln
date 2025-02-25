@@ -7,8 +7,6 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Tests", "Tests\Tests.csproj
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "StudioServer", "StudioServer\StudioServer.csproj", "{B699E8AA-1E5D-4271-863A-C493FBE1A779}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "StudioServer.Client", "StudioServer.Client\StudioServer.Client.csproj", "{844B6C9A-A0A6-44BF-98FC-694292F78600}"
-EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -23,10 +21,6 @@ Global
 		{B699E8AA-1E5D-4271-863A-C493FBE1A779}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{B699E8AA-1E5D-4271-863A-C493FBE1A779}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{B699E8AA-1E5D-4271-863A-C493FBE1A779}.Release|Any CPU.Build.0 = Release|Any CPU
-		{844B6C9A-A0A6-44BF-98FC-694292F78600}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{844B6C9A-A0A6-44BF-98FC-694292F78600}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{844B6C9A-A0A6-44BF-98FC-694292F78600}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{844B6C9A-A0A6-44BF-98FC-694292F78600}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
