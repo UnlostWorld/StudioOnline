@@ -1,4 +1,4 @@
-﻿// .                    @@             _____ _______ _    _ _____ _____ ____
+// .                    @@             _____ _______ _    _ _____ _____ ____
 //          @       @@@@@             / ____|__   __| |  | |  __ \_   _/ __ \
 //         @@@  @@@@                 | (___    | |  | |  | | |  | || || |  | |
 //         @@@@@@@@@  @    @          \___ \   | |  | |  | | |  | || || |  | |
@@ -13,12 +13,43 @@
 //        @@@@@@@@@@@@@@                This software is licensed under the
 //            @@@@  @                  GNU AFFERO GENERAL PUBLIC LICENSE v3
 
-namespace StudioOnline.Data;
+namespace StudioOnline;
 
-using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
+using System;
+using System.Collections.Generic;
 using Microsoft.EntityFrameworkCore;
 
-public class ApplicationDbContext(DbContextOptions<ApplicationDbContext> options)
-	: IdentityDbContext(options)
+public class FilesContext : DbContext
 {
+	public FilesContext(DbContextOptions options)
+		: base(options)
+	{
+	}
+
+	public FilesContext()
+	{
+	}
+
+	public DbSet<File> Files { get; set; }
+	public DbSet<Creator> Creators { get; set; }
+}
+
+public class File
+{
+	public Guid Id { get; set; }
+	public Guid Creator { get; set; }
+	public string? Name { get; set; }
+	public DateTime LastUpdate { get; set; }
+
+	public bool Search(string? query)
+	{
+		return true;
+	}
+}
+
+public class Creator
+{
+	public Guid Id { get; set; }
+	public string? Name { get; set; }
+	public List<File>? Files { get; set; }
 }

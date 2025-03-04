@@ -54,10 +54,15 @@ public class Program
 		// Register the Quartz.NET service and configure it to block shutdown until jobs are complete.
 		services.AddQuartzHostedService(options => options.WaitForJobsToComplete = true);
 
-		services.AddDbContext<ApplicationDbContext>(options =>
+		services.AddDbContext<IddictContext>(options =>
 		{
-			options.UseInMemoryDatabase("InMemDb");
+			options.UseInMemoryDatabase("Iddict");
 			options.UseOpenIddict();
+		});
+
+		services.AddDbContext<FilesContext>(options =>
+		{
+			options.UseInMemoryDatabase("Files");
 		});
 
 		var ident = services.AddDefaultIdentity<IdentityUser>(options =>
@@ -65,12 +70,12 @@ public class Program
 			options.SignIn.RequireConfirmedAccount = true;
 		});
 
-		ident.AddEntityFrameworkStores<ApplicationDbContext>();
+		ident.AddEntityFrameworkStores<IddictContext>();
 
 		var openIddict = services.AddOpenIddict();
 		openIddict.AddCore(options =>
 		{
-			options.UseEntityFrameworkCore().UseDbContext<ApplicationDbContext>();
+			options.UseEntityFrameworkCore().UseDbContext<IddictContext>();
 			options.UseQuartz();
 		});
 
