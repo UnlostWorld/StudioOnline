@@ -41,7 +41,7 @@ public class Program
 		services.AddRazorPages();
 
 		services.AddControllers();
-		services.AddScoped<IDiscordService, DiscordService>();
+		services.AddSingleton<IDiscordService, DiscordService>();
 
 		// OpenIddict offers native integration with Quartz.NET to perform scheduled tasks
 		// (like pruning orphaned authorizations/tokens from the database) at regular intervals.
@@ -104,15 +104,17 @@ public class Program
 			// parameter containing their URL as part of authorization responses. For more information,
 			// see https://datatracker.ietf.org/doc/html/draft-ietf-oauth-security-topics#section-4.4.
 			var providers = options.UseWebProviders();
-			providers.AddGitHub(options =>
-			{
-				options.SetClientId("c4ade52327b01ddacff3");
-				options.SetClientSecret("da6bed851b75e317bf6b2cb67013679d9467c122");
-				options.SetRedirectUri("callback/login/github");
-			});
-
 			providers.AddDiscord(options =>
 			{
+				string? clientId = builder.Configuration["StudioOnline:DiscordClientId"];
+				string? clientSecret = builder.Configuration["StudioOnline:DiscordClientSecret"];
+
+				if (clientId == null || clientSecret == null)
+					throw new Exception("No Discord client Id or Secret set.");
+
+				options.SetClientId(clientId);
+				options.SetClientSecret(clientSecret);
+				options.SetRedirectUri("callback/login/discord");
 			});
 		});
 
@@ -136,6 +138,9 @@ public class Program
 
 		app.MapControllerRoute("default", "api/{controller=Home}/{action=Index}");
 		app.MapControllers();
+
+		// Warm up the bot service
+		app.Services.GetService<IDiscordService>();
 
 		app.Run();
 	}

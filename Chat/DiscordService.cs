@@ -31,10 +31,20 @@ public interface IDiscordService
 	Task Report(ErrorReport report, string shortCode);
 }
 
-public class DiscordService(ILogger<DiscordService> log, IConfiguration configuration)
-	: IDiscordService, IDisposable
+public class DiscordService : IDiscordService, IDisposable
 {
-	public readonly DiscordSocketClient Client = new();
+	protected readonly ILogger<DiscordService> Log;
+	protected readonly IConfiguration Configuration;
+	protected readonly DiscordSocketClient Client;
+
+	public DiscordService(ILogger<DiscordService> log, IConfiguration configuration)
+	{
+		this.Log = log;
+		this.Configuration = configuration;
+		this.Client = new();
+
+		Task.Run(this.Start);
+	}
 
 	public async Task Start()
 	{
@@ -42,15 +52,16 @@ public class DiscordService(ILogger<DiscordService> log, IConfiguration configur
 		this.Client.Ready += this.OnClientReady;
 		this.Client.SlashCommandExecuted += this.OnClientSlashCommandExecuted;
 
-		string? token = configuration["BotToken"];
+		string? token = this.Configuration["StudioOnline:DiscordBotToken"];
 		if (token == null)
 		{
-			log.LogError("No bot token set");
+			this.Log.LogError("No Discord bot token set");
 			return;
 		}
 
 		await this.Client.LoginAsync(TokenType.Bot, token);
 		await this.Client.StartAsync();
+		this.Log.LogInformation("Discord bot started");
 	}
 
 	public void Dispose()
@@ -60,7 +71,8 @@ public class DiscordService(ILogger<DiscordService> log, IConfiguration configur
 
 	public async Task Report(ErrorReport report, string shortCode)
 	{
-		ulong channelId = ulong.Parse(configuration["BotErrorReportsChannel"] ?? "-1");
+		// TODO
+		ulong channelId = 0;
 
 		if (channelId <= 0)
 			return;
@@ -90,12 +102,12 @@ public class DiscordService(ILogger<DiscordService> log, IConfiguration configur
 	{
 		switch (arg.Severity)
 		{
-			case LogSeverity.Critical: log.LogError(arg.Exception, arg.Message); break;
-			case LogSeverity.Error: log.LogError(arg.Exception, arg.Message); break;
-			case LogSeverity.Warning: log.LogWarning(arg.Exception, arg.Message); break;
-			case LogSeverity.Info: log.LogInformation(arg.Exception, arg.Message); break;
-			case LogSeverity.Verbose: log.LogTrace(arg.Exception, arg.Message); break;
-			case LogSeverity.Debug: log.LogDebug(arg.Exception, arg.Message); break;
+			case LogSeverity.Critical: this.Log.LogError(arg.Exception, arg.Message); break;
+			case LogSeverity.Error: this.Log.LogError(arg.Exception, arg.Message); break;
+			case LogSeverity.Warning: this.Log.LogWarning(arg.Exception, arg.Message); break;
+			case LogSeverity.Info: this.Log.LogInformation(arg.Exception, arg.Message); break;
+			case LogSeverity.Verbose: this.Log.LogTrace(arg.Exception, arg.Message); break;
+			case LogSeverity.Debug: this.Log.LogDebug(arg.Exception, arg.Message); break;
 		}
 
 		return Task.CompletedTask;
@@ -111,11 +123,11 @@ public class DiscordService(ILogger<DiscordService> log, IConfiguration configur
 			globalCommand.WithDefaultMemberPermissions(GuildPermission.ManageChannels);
 			await this.Client.CreateGlobalApplicationCommandAsync(globalCommand.Build());
 
-			log.LogInformation("Registered commands");
+			this.Log.LogInformation("Registered commands");
 		}
 		catch (HttpException exception)
 		{
-			log.LogError(exception, "Failed to register commands");
+			this.Log.LogError(exception, "Failed to register commands");
 		}
 	}
 
