@@ -1,4 +1,4 @@
-﻿// .                    @@             _____ _______ _    _ _____ _____ ____
+// .                    @@             _____ _______ _    _ _____ _____ ____
 //          @       @@@@@             / ____|__   __| |  | |  __ \_   _/ __ \
 //         @@@  @@@@                 | (___    | |  | |  | | |  | || || |  | |
 //         @@@@@@@@@  @    @          \___ \   | |  | |  | | |  | || || |  | |
@@ -13,47 +13,17 @@
 //        @@@@@@@@@@@@@@                This software is licensed under the
 //            @@@@  @                  GNU AFFERO GENERAL PUBLIC LICENSE v3
 
-namespace StudioOnline.Api;
+namespace StudioOnline.Chat;
 
-using Microsoft.AspNetCore.Mvc;
-using StudioOnline;
-using StudioOnline.Bot;
+using System.Threading.Tasks;
+using Discord.Interactions;
+using Discord.WebSocket;
 
-public enum AnalyticEvents
+public class Commands
 {
-	None = 0,
-
-	StudioStarted,
-}
-
-public class AnalyticEvent
-{
-	public AnalyticEvents Event { get; set; }
-	public string? EventData { get; set; }
-}
-
-public class ErrorReport
-{
-	public string? Message { get; set; }
-	public string? LogFile { get; set; }
-}
-
-public class AnalyticsController(IBotService discord)
-	: Controller
-{
-	[HttpPost]
-	public IActionResult Error([FromBody] ErrorReport report)
+	[SlashCommand("echo", "Echoes a message")]
+	public async Task Echo(SocketSlashCommand command)
 	{
-		string shortcode = ShortCodeGenerator.Generate();
-
-		discord.Report(report, shortcode);
-
-		return this.Content(shortcode);
-	}
-
-	[HttpPost]
-	public IActionResult Event([FromBody] AnalyticEvent report)
-	{
-		return this.StatusCode(200);
+		await command.RespondAsync("Hi");
 	}
 }

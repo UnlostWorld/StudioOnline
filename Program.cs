@@ -27,7 +27,7 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Primitives;
 using Quartz;
-using StudioOnline.Chat;
+using StudioOnline.Bot;
 using StudioOnline.Utilities;
 using StudioOnline.Data;
 
@@ -41,7 +41,8 @@ public class Program
 		services.AddRazorPages();
 
 		services.AddControllers();
-		services.AddSingleton<IDiscordService, DiscordService>();
+		services.AddSingleton<IBotService, BotService>();
+		services.AddSingleton<ISlashService, SlashService>();
 
 		// OpenIddict offers native integration with Quartz.NET to perform scheduled tasks
 		// (like pruning orphaned authorizations/tokens from the database) at regular intervals.
@@ -140,7 +141,8 @@ public class Program
 		app.MapControllers();
 
 		// Warm up the bot service
-		app.Services.GetService<IDiscordService>();
+		app.Services.GetService<IBotService>();
+		app.Services.GetService<ISlashService>();
 
 		app.Run();
 	}

@@ -13,9 +13,10 @@
 //        @@@@@@@@@@@@@@                This software is licensed under the
 //            @@@@  @                  GNU AFFERO GENERAL PUBLIC LICENSE v3
 
-namespace StudioOnline.Chat;
+namespace StudioOnline.Bot;
 
 using Discord;
+using Discord.Interactions;
 using Discord.Net;
 using Discord.WebSocket;
 using Microsoft.Extensions.Configuration;
@@ -26,18 +27,24 @@ using System.Collections.Generic;
 using System.IO;
 using System.Threading.Tasks;
 
-public interface IDiscordService
+public interface IBotService
 {
 	Task Report(ErrorReport report, string shortCode);
+
+	void RegisterSlashCommandCallback(Func<SocketSlashCommand, Task> callback);
+
+	Task CreateGlobalApplicationCommandAsync(SlashCommandProperties command);
 }
 
-public class DiscordService : IDiscordService, IDisposable
+public class BotService : IBotService, IDisposable
 {
-	protected readonly ILogger<DiscordService> Log;
+	protected readonly ILogger<BotService> Log;
 	protected readonly IConfiguration Configuration;
 	protected readonly DiscordSocketClient Client;
 
-	public DiscordService(ILogger<DiscordService> log, IConfiguration configuration)
+	private Func<SocketSlashCommand, Task>? slashCommandCallback;
+
+	public BotService(ILogger<BotService> log, IConfiguration configuration)
 	{
 		this.Log = log;
 		this.Configuration = configuration;
@@ -49,7 +56,6 @@ public class DiscordService : IDiscordService, IDisposable
 	public async Task Start()
 	{
 		this.Client.Log += this.OnClientLog;
-		this.Client.Ready += this.OnClientReady;
 		this.Client.SlashCommandExecuted += this.OnClientSlashCommandExecuted;
 
 		string? token = this.Configuration["StudioOnline:DiscordBotToken"];
@@ -67,6 +73,13 @@ public class DiscordService : IDiscordService, IDisposable
 	public void Dispose()
 	{
 		this.Client.Dispose();
+	}
+
+	public Task CreateGlobalApplicationCommandAsync(SlashCommandProperties command) => this.Client.CreateGlobalApplicationCommandAsync(command);
+
+	public void RegisterSlashCommandCallback(Func<SocketSlashCommand, Task> callback)
+	{
+		this.slashCommandCallback = callback;
 	}
 
 	public async Task Report(ErrorReport report, string shortCode)
@@ -92,7 +105,7 @@ public class DiscordService : IDiscordService, IDisposable
 				attachments.Add(new FileAttachment(mem, "Log.txt"));
 			}
 
-			string message = $"❗\nError Report: **{shortCode}**\n{report.Message}\n\n{TimestampTag.FormatFromDateTime(System.DateTime.Now, TimestampTagStyles.LongDateTime)}";
+			string message = $"❗\nError Report: **{shortCode}**\n{report.Message}\n\n{TimestampTag.FormatFromDateTime(DateTime.Now, TimestampTagStyles.LongDateTime)}";
 
 			await textChannel.SendFilesAsync(attachments, message);
 		}
@@ -113,35 +126,11 @@ public class DiscordService : IDiscordService, IDisposable
 		return Task.CompletedTask;
 	}
 
-	private async Task OnClientReady()
+	private Task OnClientSlashCommandExecuted(SocketSlashCommand command)
 	{
-		try
-		{
-			SlashCommandBuilder globalCommand = new SlashCommandBuilder();
-			globalCommand.WithName("error-logs-here");
-			globalCommand.WithDescription("Sets the output chanel for error logs");
-			globalCommand.WithDefaultMemberPermissions(GuildPermission.ManageChannels);
-			await this.Client.CreateGlobalApplicationCommandAsync(globalCommand.Build());
+		if (this.slashCommandCallback != null)
+			return this.slashCommandCallback.Invoke(command);
 
-			this.Log.LogInformation("Registered commands");
-		}
-		catch (HttpException exception)
-		{
-			this.Log.LogError(exception, "Failed to register commands");
-		}
-	}
-
-	private async Task OnClientSlashCommandExecuted(SocketSlashCommand arg)
-	{
-		if (arg.CommandName == "error-logs-here")
-		{
-			if (arg.ChannelId == null)
-				return;
-
-			////this.Configuration.Current.BotErrorReportsChannel = (ulong)arg.ChannelId;
-			////this.Configuration.Save();
-
-			await arg.RespondAsync($"OK");
-		}
+		return Task.CompletedTask;
 	}
 }
