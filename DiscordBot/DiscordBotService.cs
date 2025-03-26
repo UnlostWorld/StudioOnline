@@ -98,7 +98,7 @@ public class DiscordBotService : IDiscordBotService, IDisposable
 		try
 		{
 			this.Client.Log += this.OnClientLog;
-			this.Client.InteractionCreated += this.OnclientInteractionCreated;
+			this.Client.InteractionCreated += this.OnClientInteractionCreated;
 			this.Client.Ready += this.OnClientReady;
 
 			string? token = this.Configuration["StudioOnline_DiscordBotToken"];
@@ -127,7 +127,7 @@ public class DiscordBotService : IDiscordBotService, IDisposable
 		await this.Interactions.RegisterCommandsGloballyAsync();
 	}
 
-	private Task OnclientInteractionCreated(SocketInteraction interaction)
+	private Task OnClientInteractionCreated(SocketInteraction interaction)
 	{
 		SocketInteractionContext context = new(this.Client, interaction);
 		return this.Interactions.ExecuteCommandAsync(context, this.Services);
