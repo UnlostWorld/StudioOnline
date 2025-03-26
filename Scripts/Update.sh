@@ -8,4 +8,4 @@ git pull
 echo "building"
 dotnet publish --configuration Release
 echo "Starting Server"
-(dotnet ./bin/StudioOnline.dll &)
+(dotnet ./bin/StudioOnline.dll </dev/null &>/dev/null &)
