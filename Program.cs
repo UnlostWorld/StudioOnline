@@ -16,18 +16,13 @@
 namespace StudioOnline;
 
 using System;
-using System.Collections.Generic;
-using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.Caching.Memory;
-using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
-using Microsoft.Extensions.Primitives;
 using Quartz;
-using StudioOnline.Bot;
+using StudioOnline.DiscordBot;
 using StudioOnline.Utilities;
 using StudioOnline.Data;
 
@@ -41,8 +36,10 @@ public class Program
 		services.AddRazorPages();
 
 		services.AddControllers();
-		services.AddSingleton<IBotService, BotService>();
-		services.AddSingleton<ISlashService, SlashService>();
+		services.AddDiscordBot(options =>
+		{
+			options.AddInteractionModule<EchoCommandModule>();
+		});
 
 		// OpenIddict offers native integration with Quartz.NET to perform scheduled tasks
 		// (like pruning orphaned authorizations/tokens from the database) at regular intervals.
@@ -73,7 +70,7 @@ public class Program
 
 		ident.AddEntityFrameworkStores<IddictContext>();
 
-		var openIddict = services.AddOpenIddict();
+		/*var openIddict = services.AddOpenIddict();
 		openIddict.AddCore(options =>
 		{
 			options.UseEntityFrameworkCore().UseDbContext<IddictContext>();
@@ -117,7 +114,7 @@ public class Program
 				options.SetClientSecret(clientSecret);
 				options.SetRedirectUri("callback/login/discord");
 			});
-		});
+		});*/
 
 		WebApplication app = builder.Build();
 
@@ -140,9 +137,7 @@ public class Program
 		app.MapControllerRoute("default", "api/{controller=Home}/{action=Index}");
 		app.MapControllers();
 
-		// Warm up the bot service
-		app.Services.GetService<IBotService>();
-		app.Services.GetService<ISlashService>();
+		app.UseDiscordBot();
 
 		app.Run();
 	}

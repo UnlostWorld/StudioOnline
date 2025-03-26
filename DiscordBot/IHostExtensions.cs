@@ -13,17 +13,15 @@
 //        @@@@@@@@@@@@@@                This software is licensed under the
 //            @@@@  @                  GNU AFFERO GENERAL PUBLIC LICENSE v3
 
-namespace StudioOnline.Chat;
+namespace StudioOnline.DiscordBot;
+using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Hosting;
 
-using System.Threading.Tasks;
-using Discord.Interactions;
-using Discord.WebSocket;
-
-public class Commands
+public static class IHostExtensions
 {
-	[SlashCommand("echo", "Echoes a message")]
-	public async Task Echo(SocketSlashCommand command)
+	public static void UseDiscordBot(this IHost self)
 	{
-		await command.RespondAsync("Hi");
+		IDiscordBotService? botService = self.Services.GetService<IDiscordBotService>();
+		botService?.Start();
 	}
 }

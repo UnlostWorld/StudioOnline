@@ -13,61 +13,45 @@
 //        @@@@@@@@@@@@@@                This software is licensed under the
 //            @@@@  @                  GNU AFFERO GENERAL PUBLIC LICENSE v3
 
-namespace StudioOnline.Bot;
+namespace StudioOnline.DiscordBot;
 
 using Discord;
 using Discord.Interactions;
-using Discord.Net;
 using Discord.WebSocket;
 using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
+using Microsoft.Extensions.Options;
 using StudioOnline.Api;
 using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Threading.Tasks;
 
-public interface IBotService
+public interface IDiscordBotService
 {
 	Task Report(ErrorReport report, string shortCode);
-
-	void RegisterSlashCommandCallback(Func<SocketSlashCommand, Task> callback);
-
-	Task CreateGlobalApplicationCommandAsync(SlashCommandProperties command);
+	void Start();
 }
 
-public class BotService : IBotService, IDisposable
+public class DiscordBotService : IDiscordBotService, IDisposable
 {
-	protected readonly ILogger<BotService> Log;
+	protected readonly IOptions<DiscordBotOptions> Options;
+	protected readonly ILogger<DiscordBotService> Log;
 	protected readonly IConfiguration Configuration;
+	protected readonly IServiceProvider Services;
 	protected readonly DiscordSocketClient Client;
+	protected readonly InteractionService Interactions;
 
-	private Func<SocketSlashCommand, Task>? slashCommandCallback;
-
-	public BotService(ILogger<BotService> log, IConfiguration configuration)
+	public DiscordBotService(IServiceProvider services, ILogger<DiscordBotService> log, IConfiguration configuration, IOptions<DiscordBotOptions> options)
 	{
+		this.Services = services;
 		this.Log = log;
 		this.Configuration = configuration;
+		this.Options = options;
+
 		this.Client = new();
-
-		Task.Run(this.Start);
-	}
-
-	public async Task Start()
-	{
-		this.Client.Log += this.OnClientLog;
-		this.Client.SlashCommandExecuted += this.OnClientSlashCommandExecuted;
-
-		string? token = this.Configuration["StudioOnline:DiscordBotToken"];
-		if (token == null)
-		{
-			this.Log.LogError("No Discord bot token set");
-			return;
-		}
-
-		await this.Client.LoginAsync(TokenType.Bot, token);
-		await this.Client.StartAsync();
-		this.Log.LogInformation("Discord bot started");
+		this.Interactions = new(this.Client);
 	}
 
 	public void Dispose()
@@ -75,11 +59,9 @@ public class BotService : IBotService, IDisposable
 		this.Client.Dispose();
 	}
 
-	public Task CreateGlobalApplicationCommandAsync(SlashCommandProperties command) => this.Client.CreateGlobalApplicationCommandAsync(command);
-
-	public void RegisterSlashCommandCallback(Func<SocketSlashCommand, Task> callback)
+	public void Start()
 	{
-		this.slashCommandCallback = callback;
+		Task.Run(this.StartAsync);
 	}
 
 	public async Task Report(ErrorReport report, string shortCode)
@@ -111,6 +93,46 @@ public class BotService : IBotService, IDisposable
 		}
 	}
 
+	private async Task StartAsync()
+	{
+		try
+		{
+			this.Client.Log += this.OnClientLog;
+			this.Client.InteractionCreated += this.OnclientInteractionCreated;
+			this.Client.Ready += this.OnClientReady;
+
+			string? token = this.Configuration["StudioOnline:DiscordBotToken"];
+			if (token == null)
+			{
+				this.Log.LogError("No Discord bot token set");
+				return;
+			}
+
+			await this.Client.LoginAsync(TokenType.Bot, token);
+			await this.Client.StartAsync();
+
+			this.Log.LogInformation("Discord bot started");
+		}
+		catch(Exception ex)
+		{
+			this.Log.LogError(ex, "Error starting Discord Bot");
+		}
+	}
+
+	private async Task OnClientReady()
+	{
+		foreach(Type moduleType in this.Options.Value.InteractionModules)
+			await this.Interactions.AddModuleAsync(moduleType, this.Services);
+
+		await this.Interactions.RegisterCommandsGloballyAsync();
+	}
+
+	private Task OnclientInteractionCreated(SocketInteraction interaction)
+	{
+		SocketInteractionContext context = new(this.Client, interaction);
+		return this.Interactions.ExecuteCommandAsync(context, this.Services);
+	}
+
 	private Task OnClientLog(global::Discord.LogMessage arg)
 	{
 		switch (arg.Severity)
@@ -122,14 +144,6 @@ public class BotService : IBotService, IDisposable
 			case LogSeverity.Verbose: this.Log.LogTrace(arg.Exception, arg.Message); break;
 			case LogSeverity.Debug: this.Log.LogDebug(arg.Exception, arg.Message); break;
 		}
-
-		return Task.CompletedTask;
-	}
-
-	private Task OnClientSlashCommandExecuted(SocketSlashCommand command)
-	{
-		if (this.slashCommandCallback != null)
-			return this.slashCommandCallback.Invoke(command);
 
 		return Task.CompletedTask;
 	}

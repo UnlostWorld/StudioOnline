@@ -1,4 +1,4 @@
-﻿// .                    @@             _____ _______ _    _ _____ _____ ____
+// .                    @@             _____ _______ _    _ _____ _____ ____
 //          @       @@@@@             / ____|__   __| |  | |  __ \_   _/ __ \
 //         @@@  @@@@                 | (___    | |  | |  | | |  | || || |  | |
 //         @@@@@@@@@  @    @          \___ \   | |  | |  | | |  | || || |  | |
@@ -13,47 +13,17 @@
 //        @@@@@@@@@@@@@@                This software is licensed under the
 //            @@@@  @                  GNU AFFERO GENERAL PUBLIC LICENSE v3
 
-namespace StudioOnline.Api;
+using System.Threading.Tasks;
+using Discord;
+using Discord.Interactions;
 
-using Microsoft.AspNetCore.Mvc;
-using StudioOnline;
-using StudioOnline.DiscordBot;
-
-public enum AnalyticEvents
+public class EchoCommandModule
+	: InteractionModuleBase<SocketInteractionContext>
 {
-	None = 0,
-
-	StudioStarted,
-}
-
-public class AnalyticEvent
-{
-	public AnalyticEvents Event { get; set; }
-	public string? EventData { get; set; }
-}
-
-public class ErrorReport
-{
-	public string? Message { get; set; }
-	public string? LogFile { get; set; }
-}
-
-public class AnalyticsController(IDiscordBotService discord)
-	: Controller
-{
-	[HttpPost]
-	public IActionResult Error([FromBody] ErrorReport report)
-	{
-		string shortcode = ShortCodeGenerator.Generate();
-
-		discord.Report(report, shortcode);
-
-		return this.Content(shortcode);
-	}
-
-	[HttpPost]
-	public IActionResult Event([FromBody] AnalyticEvent report)
-	{
-		return this.StatusCode(200);
-	}
+    [SlashCommand("echo", "Echo an input")]
+    public async Task Echo(string input, ITextChannel channel)
+    {
+		await channel.SendMessageAsync(input);
+		await this.RespondAsync("Done", ephemeral: true);
+    }
 }
