@@ -1,0 +1,33 @@
+{
+	"version": "2.0.0",
+	"tasks": [
+		{
+			"label": "Stop Studio Online",
+			"type": "shell",
+			"command": "ssh root@137.184.40.216 \"bash ./StudioOnline/Scripts/Stop.sh\"",
+			"problemMatcher": [],
+			"presentation": {
+                "echo": true,
+                "reveal": "always",
+                "focus": true,
+                "panel": "shared",
+                "showReuseMessage": true,
+                "clear": false
+            }
+		},
+		{
+			"label": "Deploy Studio Online",
+			"type": "shell",
+			"command": "ssh root@137.184.40.216 \"bash ./StudioOnline/Scripts/Update.sh\"",
+			"problemMatcher": [],
+			"presentation": {
+                "echo": true,
+                "reveal": "always",
+                "focus": true,
+                "panel": "shared",
+                "showReuseMessage": true,
+                "clear": false
+            }
+		}
+	]
+}
