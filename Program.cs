@@ -70,7 +70,7 @@ public class Program
 
 		ident.AddEntityFrameworkStores<IddictContext>();
 
-		/*var openIddict = services.AddOpenIddict();
+		var openIddict = services.AddOpenIddict();
 		openIddict.AddCore(options =>
 		{
 			options.UseEntityFrameworkCore().UseDbContext<IddictContext>();
@@ -104,8 +104,8 @@ public class Program
 			var providers = options.UseWebProviders();
 			providers.AddDiscord(options =>
 			{
-				string? clientId = builder.Configuration["StudioOnline:DiscordClientId"];
-				string? clientSecret = builder.Configuration["StudioOnline:DiscordClientSecret"];
+				string? clientId = builder.Configuration["StudioOnline_DiscordClientId"];
+				string? clientSecret = builder.Configuration["StudioOnline_DiscordClientSecret"];
 
 				if (clientId == null || clientSecret == null)
 					throw new Exception("No Discord client Id or Secret set.");
@@ -114,7 +114,7 @@ public class Program
 				options.SetClientSecret(clientSecret);
 				options.SetRedirectUri("callback/login/discord");
 			});
-		});*/
+		});
 
 		WebApplication app = builder.Build();
 

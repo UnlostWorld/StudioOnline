@@ -101,7 +101,7 @@ public class DiscordBotService : IDiscordBotService, IDisposable
 			this.Client.InteractionCreated += this.OnclientInteractionCreated;
 			this.Client.Ready += this.OnClientReady;
 
-			string? token = this.Configuration["StudioOnline:DiscordBotToken"];
+			string? token = this.Configuration["StudioOnline_DiscordBotToken"];
 			if (token == null)
 			{
 				this.Log.LogError("No Discord bot token set");
