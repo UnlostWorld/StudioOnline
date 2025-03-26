@@ -1,5 +1,6 @@
 #! /usr/bin/bash
 echo "Updating Studio Online..."
+cd ..
 echo "Stopping Server"
 pkill dotnet
 echo "Getting latest"
