@@ -16,6 +16,7 @@
 namespace StudioOnline.Identity;
 
 using System;
+using System.Threading.Tasks;
 using AspNetCore.Identity.Mongo;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.Extensions.DependencyInjection;
@@ -30,26 +31,30 @@ public static class ServiceCollectionExtensions
 		ServiceCollectionIdentityConfigurator config = new();
 		configure.Invoke(config);
 
-		string? dbConnectionString = config.ConnectionString;
-		if (dbConnectionString == null)
-			throw new("Missing connection string for MongoDb");
-
-		IMongoDatabase openIddictDb = new MongoClient(dbConnectionString).GetDatabase("openiddict");
 		OpenIddictBuilder openIddict = self.AddOpenIddict();
+
 		openIddict.AddCore(options =>
 		{
+			MongoUrl mongoUrl = new MongoUrl(config.OpenIddictConnectionString);
+			IMongoDatabase openIddictDb = new MongoClient(mongoUrl).GetDatabase(mongoUrl.DatabaseName);
 			options.UseMongoDb().UseDatabase(openIddictDb);
+
 			options.UseQuartz();
 		});
 
 		IdentityBuilder ident = self.AddIdentityMongoDbProvider<ApplicationUser, ApplicationRole, ObjectId>(
 			identity =>
 			{
-				identity.SignIn.RequireConfirmedAccount = true;
+				identity.SignIn.RequireConfirmedAccount = false;
+				identity.Password.RequireNonAlphanumeric = false;
+				identity.Password.RequiredLength = 4;
+				identity.Password.RequiredUniqueChars = 0;
+				identity.Password.RequireLowercase = false;
+				identity.Password.RequireUppercase = false;
 			},
 			mongo =>
 			{
-				mongo.ConnectionString = dbConnectionString;
+				mongo.ConnectionString = config.IdentityConnectionString;
 			});
 
 		ident.AddDefaultUI();
@@ -112,7 +117,8 @@ public static class IHostExtensions
 
 public class ServiceCollectionIdentityConfigurator
 {
-	public string? ConnectionString;
+	public string? IdentityConnectionString;
+	public string? OpenIddictConnectionString;
 	public string? DiscordClientId;
 	public string? DiscordClientSecret;
 }

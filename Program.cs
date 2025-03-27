@@ -41,7 +41,8 @@ public class Program
 
 		services.AddStudioIdentity(options =>
 		{
-			options.ConnectionString = builder.Configuration.GetConnectionString("MongoDb");
+			options.OpenIddictConnectionString = builder.Configuration.GetConnectionString("OpenIddict");
+			options.IdentityConnectionString = builder.Configuration.GetConnectionString("Identity");
 			options.DiscordClientId = builder.Configuration["StudioOnline_DiscordClientId"];
 			options.DiscordClientSecret = builder.Configuration["StudioOnline_DiscordClientSecret"];
 		});
