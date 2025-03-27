@@ -15,11 +15,10 @@
 
 namespace StudioOnline.Api;
 
+using System;
 using System.Collections.Generic;
-using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore;
 
 public class FileSearchRequest
 {
@@ -30,9 +29,8 @@ public class FilesController()
 	: Controller
 {
 	[HttpPost]
-	public async Task<List<File>> Search([FromBody] FileSearchRequest request)
+	public Task<List<File>> Search([FromBody] FileSearchRequest request)
 	{
-		using FilesContext db = new();
-		return await db.Files.Where(b => b.Search(request.QueryString)).OrderBy(b => b.LastUpdate).ToListAsync();
+		throw new NotImplementedException();
 	}
 }

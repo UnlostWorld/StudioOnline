@@ -28,6 +28,20 @@
                 "showReuseMessage": true,
                 "clear": false
             }
+		},
+		{
+			"label": "Start Local Mongod",
+			"type": "shell",
+			"command": "mongod --noauth --dbpath \"${workspaceFolder}/bin/data/\"",
+			"problemMatcher": [],
+			"presentation": {
+                "echo": true,
+                "reveal": "always",
+                "focus": true,
+                "panel": "shared",
+                "showReuseMessage": true,
+                "clear": false
+            }
 		}
 	]
 }

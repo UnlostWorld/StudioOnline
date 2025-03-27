@@ -113,7 +113,7 @@ public class DiscordBotService : IDiscordBotService, IDisposable
 
 			this.Log.LogInformation("Discord bot started");
 		}
-		catch(Exception ex)
+		catch (Exception ex)
 		{
 			this.Log.LogError(ex, "Error starting Discord Bot");
 		}
@@ -121,7 +121,7 @@ public class DiscordBotService : IDiscordBotService, IDisposable
 
 	private async Task OnClientReady()
 	{
-		foreach(Type moduleType in this.Options.Value.InteractionModules)
+		foreach (Type moduleType in this.Options.Value.InteractionModules)
 			await this.Interactions.AddModuleAsync(moduleType, this.Services);
 
 		await this.Interactions.RegisterCommandsGloballyAsync();

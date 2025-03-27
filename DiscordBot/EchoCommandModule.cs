@@ -13,6 +13,8 @@
 //        @@@@@@@@@@@@@@                This software is licensed under the
 //            @@@@  @                  GNU AFFERO GENERAL PUBLIC LICENSE v3
 
+namespace StudioOnline.DiscordBot;
+
 using System.Threading.Tasks;
 using Discord;
 using Discord.Interactions;
@@ -20,10 +22,10 @@ using Discord.Interactions;
 public class EchoCommandModule
 	: InteractionModuleBase<SocketInteractionContext>
 {
-    [SlashCommand("echo", "Echo an input")]
-    public async Task Echo(string input, ITextChannel channel)
-    {
+	[SlashCommand("echo", "Echo an input")]
+	public async Task Echo(string input, ITextChannel channel)
+	{
 		await channel.SendMessageAsync(input);
 		await this.RespondAsync("Done", ephemeral: true);
-    }
+	}
 }

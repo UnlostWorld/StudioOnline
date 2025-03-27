@@ -1,0 +1,21 @@
+﻿root = true
+
+[*.cs]
+indent_style = tab
+dotnet_diagnostic.SA1633.severity = none
+dotnet_diagnostic.SA1200.severity = none
+dotnet_diagnostic.SA1027.severity = none
+dotnet_diagnostic.SA1413.severity = none
+dotnet_diagnostic.SA1208.severity = none
+dotnet_diagnostic.SA1629.severity = none
+dotnet_diagnostic.SA1625.severity = none
+dotnet_diagnostic.SA1614.severity = none
+dotnet_diagnostic.SA1615.severity = none
+dotnet_diagnostic.SA1025.severity = none
+dotnet_diagnostic.SA1515.severity = none
+dotnet_diagnostic.SA1513.severity = none
+dotnet_diagnostic.SA1508.severity = none
+
+dotnet_diagnostic.CS8600.severity = none
+dotnet_diagnostic.CS8604.severity = none
+dotnet_diagnostic.CS8603.severity = none

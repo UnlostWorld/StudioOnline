@@ -17,13 +17,12 @@ namespace StudioOnline.DiscordBot;
 
 using Discord.Interactions;
 using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Extensions.Options;
 using System;
 using System.Collections.Generic;
 
 public static class ServiceCollectionExtensions
 {
-	public static void AddDiscordBot(this IServiceCollection self,  Action<ServiceCollectionDiscordBotConfigurator>? configure = null)
+	public static void AddDiscordBot(this IServiceCollection self, Action<ServiceCollectionDiscordBotConfigurator>? configure = null)
 	{
 		self.AddOptions();
 		self.AddSingleton<IDiscordBotService, DiscordBotService>();

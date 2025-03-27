@@ -13,16 +13,10 @@
 //        @@@@@@@@@@@@@@                This software is licensed under the
 //            @@@@  @                  GNU AFFERO GENERAL PUBLIC LICENSE v3
 
-namespace StudioOnline.DiscordBot;
+namespace StudioOnline.Identity;
 
-using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Extensions.Hosting;
+using AspNetCore.Identity.Mongo.Model;
 
-public static class IHostExtensions
+public class ApplicationUser : MongoUser
 {
-	public static void UseDiscordBot(this IHost self)
-	{
-		IDiscordBotService? botService = self.Services.GetService<IDiscordBotService>();
-		botService?.Start();
-	}
 }

@@ -17,22 +17,6 @@ namespace StudioOnline;
 
 using System;
 using System.Collections.Generic;
-using Microsoft.EntityFrameworkCore;
-
-public class FilesContext : DbContext
-{
-	public FilesContext(DbContextOptions options)
-		: base(options)
-	{
-	}
-
-	public FilesContext()
-	{
-	}
-
-	public DbSet<File> Files { get; set; }
-	public DbSet<Creator> Creators { get; set; }
-}
 
 public class File
 {
