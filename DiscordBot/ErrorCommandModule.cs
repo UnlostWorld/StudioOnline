@@ -20,7 +20,7 @@ using System.Threading.Tasks;
 using Discord.Interactions;
 using StudioOnline.Api;
 
-public class ErrorCommandModule(IDiscordBotService bot)
+public class ErrorCommandModule(IDiscordBotService bot, IAnalyticsService analytics)
 	: InteractionModuleBase<SocketInteractionContext>
 {
 	[SlashCommand("error-reports-here", "Set the output channel for error reports")]
@@ -48,8 +48,7 @@ public class ErrorCommandModule(IDiscordBotService bot)
 			report.LogFile = "A Test error log file. \n\n" + ex.StackTrace;
 		}
 
-		string shortCode = ShortCodeGenerator.Generate();
-		await bot.Report(report, shortCode);
+		await analytics.Report(report);
 		await this.RespondAsync("Done", ephemeral: true);
 	}
 }

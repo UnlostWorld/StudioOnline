@@ -15,9 +15,8 @@
 
 namespace StudioOnline.Api;
 
+using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
-using StudioOnline;
-using StudioOnline.DiscordBot;
 
 public enum AnalyticEvents
 {
@@ -38,17 +37,14 @@ public class ErrorReport
 	public string? LogFile { get; set; }
 }
 
-public class AnalyticsController(IDiscordBotService discord)
+public class AnalyticsController(IAnalyticsService analyticsService)
 	: Controller
 {
 	[HttpPost]
-	public IActionResult Error([FromBody] ErrorReport report)
+	public async Task<IActionResult> Error([FromBody] ErrorReport report)
 	{
-		string shortcode = ShortCodeGenerator.Generate();
-
-		discord.Report(report, shortcode);
-
-		return this.Content(shortcode);
+		string code = await analyticsService.Report(report);
+		return this.Content(code);
 	}
 
 	[HttpPost]

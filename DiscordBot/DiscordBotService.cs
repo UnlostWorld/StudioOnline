@@ -18,7 +18,6 @@ namespace StudioOnline.DiscordBot;
 using Discord;
 using Discord.Interactions;
 using Discord.WebSocket;
-using Microsoft.AspNetCore.Mvc.Filters;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
@@ -26,18 +25,18 @@ using Microsoft.Extensions.Options;
 using MongoDB.Bson;
 using MongoDB.Bson.Serialization.Attributes;
 using MongoDB.Driver;
-using StudioOnline.Api;
 using System;
 using System.Collections.Generic;
-using System.IO;
 using System.Threading.Tasks;
 
 public interface IDiscordBotService
 {
-	Task Report(ErrorReport report, string shortCode);
 	void Start();
 
+	IGuild GetGuild(ulong guildId);
+
 	Task<DiscordBotGuildConfiguration> GetGuildConfiguration(ulong guildId);
+	Task<IEnumerable<DiscordBotGuildConfiguration>> GetGuildConfigurations();
 	Task SetGuildConfiguration(DiscordBotGuildConfiguration config);
 }
 
@@ -79,6 +78,8 @@ public class DiscordBotService : IDiscordBotService, IDisposable
 		this.GuildConfigurations = database.GetCollection<DiscordBotGuildConfiguration>("Guilds");
 	}
 
+	public IGuild GetGuild(ulong guildId) => this.Client.GetGuild(guildId);
+
 	public void Dispose()
 	{
 		this.Client.Dispose();
@@ -104,40 +105,16 @@ public class DiscordBotService : IDiscordBotService, IDisposable
 		return configuration;
 	}
 
+	public async Task<IEnumerable<DiscordBotGuildConfiguration>> GetGuildConfigurations()
+	{
+		IAsyncCursor<DiscordBotGuildConfiguration> cursor = await this.GuildConfigurations.FindAsync(FilterDefinition<DiscordBotGuildConfiguration>.Empty);
+		return cursor.ToEnumerable();
+	}
+
 	public async Task SetGuildConfiguration(DiscordBotGuildConfiguration configuration)
 	{
 		FilterDefinition<DiscordBotGuildConfiguration> filter = Builders<DiscordBotGuildConfiguration>.Filter.Eq(r => r.GuildId, configuration.GuildId);
 		await this.GuildConfigurations.ReplaceOneAsync(filter, configuration);
-	}
-
-	public async Task Report(ErrorReport report, string shortCode)
-	{
-		List<FileAttachment> attachments = new List<FileAttachment>();
-		if (!string.IsNullOrEmpty(report.LogFile))
-		{
-			MemoryStream mem = new MemoryStream();
-			StreamWriter writer = new StreamWriter(mem);
-			writer.Write(report.LogFile);
-
-			attachments.Add(new FileAttachment(mem, "Log.txt"));
-		}
-
-		string message = $"❗\nError Report: **{shortCode}**\n{report.Message}\n\n{TimestampTag.FormatFromDateTime(DateTime.Now, TimestampTagStyles.LongDateTime)}";
-
-		IEnumerable<DiscordBotGuildConfiguration> guildConfigs = this.GuildConfigurations.Find(FilterDefinition<DiscordBotGuildConfiguration>.Empty).ToEnumerable();
-		foreach(DiscordBotGuildConfiguration guildConfig in guildConfigs)
-		{
-			if (guildConfig.ErrorReportsChannel <= 0)
-				continue;
-
-			SocketGuild guild = this.Client.GetGuild(guildConfig.GuildId);
-			SocketGuildChannel channel = guild.GetChannel(guildConfig.ErrorReportsChannel);
-
-			if (channel is ITextChannel textChannel)
-			{
-				await textChannel.SendFilesAsync(attachments, message);
-			}
-		}
 	}
 
 	private async Task StartAsync()

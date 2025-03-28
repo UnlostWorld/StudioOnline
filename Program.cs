@@ -34,6 +34,8 @@ public class Program
 		services.AddRazorPages();
 		services.AddControllers();
 
+		services.AddSingleton<IAnalyticsService, AnalyticsService>();
+
 		services.AddDiscordBot(options =>
 		{
 			options.SetConnectionString(builder.Configuration.GetConnectionString("DiscordBot"));
