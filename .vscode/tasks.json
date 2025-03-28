@@ -30,6 +30,20 @@
             }
 		},
 		{
+			"label": "Connect To Studio Online",
+			"type": "shell",
+			"command": "ssh root@137.184.40.216",
+			"problemMatcher": [],
+			"presentation": {
+                "echo": true,
+                "reveal": "always",
+                "focus": true,
+                "panel": "shared",
+                "showReuseMessage": true,
+                "clear": false
+            }
+		},
+		{
 			"label": "Start Local Mongod",
 			"type": "shell",
 			"command": "mongod --noauth --dbpath \"${workspaceFolder}/bin/data/\"",

@@ -36,7 +36,9 @@ public class Program
 
 		services.AddDiscordBot(options =>
 		{
+			options.SetConnectionString(builder.Configuration.GetConnectionString("DiscordBot"));
 			options.AddInteractionModule<EchoCommandModule>();
+			options.AddInteractionModule<ErrorCommandModule>();
 		});
 
 		services.AddStudioIdentity(options =>

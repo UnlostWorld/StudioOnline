@@ -36,6 +36,8 @@ public static class ServiceCollectionExtensions
 
 public class ServiceCollectionDiscordBotConfigurator(IServiceCollection services)
 {
+	public void SetConnectionString(string? value) => services.Configure<DiscordBotOptions>(options => options.ConnectionString = value);
+
 	public void AddInteractionModule<T>()
 		where T : IInteractionModuleBase
 	{
@@ -46,4 +48,5 @@ public class ServiceCollectionDiscordBotConfigurator(IServiceCollection services
 public class DiscordBotOptions
 {
 	public readonly List<Type> InteractionModules = new();
+	public string? ConnectionString;
 }

@@ -64,6 +64,9 @@ public static class ServiceCollectionExtensions
 			// Note: this sample only uses the authorization code flow,
 			// but you can enable the other flows if necessary.
 			options.AllowAuthorizationCodeFlow();
+			options.AllowClientCredentialsFlow();
+			options.AllowHybridFlow();
+			options.AllowRefreshTokenFlow();
 
 			// Register the signing and encryption credentials used to protect
 			// sensitive data like the state tokens produced by OpenIddict.
@@ -106,8 +109,6 @@ public static class IHostExtensions
 	{
 		/*Task.Run(() =>
 		{
-			IMongoDatabase openIddictDb = new MongoClient(dbConnectionString).GetDatabase("openiddict");
-
 			// If the openIddict db is empty, initialize its indexes.
 			if (openIddictDb.ListCollectionNames().ToEnumerable().Count() <= 0)
 				await OpenIddictFunctions.GenerateIndexes(self.Services);
