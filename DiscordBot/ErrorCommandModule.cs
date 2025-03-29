@@ -18,7 +18,7 @@ namespace StudioOnline.DiscordBot;
 using System;
 using System.Threading.Tasks;
 using Discord.Interactions;
-using StudioOnline.Api;
+using StudioOnline.Analytics;
 
 public class ErrorCommandModule(IDiscordBotService bot, IAnalyticsService analytics)
 	: InteractionModuleBase<SocketInteractionContext>
