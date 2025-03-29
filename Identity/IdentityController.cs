@@ -23,6 +23,7 @@ using StudioOnline.Identity;
 
 using SignInResult = Microsoft.AspNetCore.Identity.SignInResult;
 
+[Route("Api/[controller]/[action]")]
 public class IdentityController(
 	SignInManager<ApplicationUser> signInManager,
 	UserManager<ApplicationUser> userManager,

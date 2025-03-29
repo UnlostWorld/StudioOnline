@@ -13,13 +13,14 @@
 //        @@@@@@@@@@@@@@                This software is licensed under the
 //            @@@@  @                  GNU AFFERO GENERAL PUBLIC LICENSE v3
 
+namespace StudioOnline.Analytics;
+
 using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Threading.Tasks;
 using Discord;
 using StudioOnline;
-using StudioOnline.Api;
 using StudioOnline.DiscordBot;
 
 public interface IAnalyticsService

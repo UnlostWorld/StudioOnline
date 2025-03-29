@@ -1,4 +1,4 @@
-// .                    @@             _____ _______ _    _ _____ _____ ____
+﻿// .                    @@             _____ _______ _    _ _____ _____ ____
 //          @       @@@@@             / ____|__   __| |  | |  __ \_   _/ __ \
 //         @@@  @@@@                 | (___    | |  | |  | | |  | || || |  | |
 //         @@@@@@@@@  @    @          \___ \   | |  | |  | | |  | || || |  | |
@@ -13,24 +13,44 @@
 //        @@@@@@@@@@@@@@                This software is licensed under the
 //            @@@@  @                  GNU AFFERO GENERAL PUBLIC LICENSE v3
 
-namespace StudioOnline.Api;
+namespace StudioOnline.Analytics;
 
-using System;
-using System.Collections.Generic;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 
-public class FileSearchRequest
+public enum AnalyticEvents
 {
-	public string? QueryString { get; set; }
+	None = 0,
+
+	StudioStarted,
 }
 
-public class FilesController()
+public class AnalyticEvent
+{
+	public AnalyticEvents Event { get; set; }
+	public string? EventData { get; set; }
+}
+
+public class ErrorReport
+{
+	public string? Message { get; set; }
+	public string? LogFile { get; set; }
+}
+
+[Route("Api/[controller]/[action]")]
+public class AnalyticsController(IAnalyticsService analyticsService)
 	: Controller
 {
 	[HttpPost]
-	public Task<List<File>> Search([FromBody] FileSearchRequest request)
+	public async Task<IActionResult> Error([FromBody] ErrorReport report)
 	{
-		throw new NotImplementedException();
+		string code = await analyticsService.Report(report);
+		return this.Content(code);
+	}
+
+	[HttpPost]
+	public IActionResult Event([FromBody] AnalyticEvent report)
+	{
+		return this.StatusCode(200);
 	}
 }

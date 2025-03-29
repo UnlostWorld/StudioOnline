@@ -22,6 +22,7 @@ using StudioOnline.DiscordBot;
 using StudioOnline.Utilities;
 using Microsoft.Extensions.Configuration;
 using StudioOnline.Identity;
+using StudioOnline.Analytics;
 
 public class Program
 {
