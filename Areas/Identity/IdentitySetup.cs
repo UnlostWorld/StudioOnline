@@ -16,13 +16,13 @@
 namespace StudioOnline.Identity;
 
 using System;
-using System.Threading.Tasks;
+using System.Globalization;
 using AspNetCore.Identity.Mongo;
+using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using MongoDB.Bson;
-using MongoDB.Driver;
 
 public static class ServiceCollectionExtensions
 {
@@ -31,21 +31,31 @@ public static class ServiceCollectionExtensions
 		ServiceCollectionIdentityConfigurator config = new();
 		configure.Invoke(config);
 
-		OpenIddictBuilder openIddict = self.AddOpenIddict();
-
-		openIddict.AddCore(options =>
+		AuthenticationBuilder authBuilder = self.AddAuthentication();
+		if (config.DiscordClientId != null && config.DiscordClientSecret != null)
 		{
-			MongoUrl mongoUrl = new MongoUrl(config.OpenIddictConnectionString);
-			IMongoDatabase openIddictDb = new MongoClient(mongoUrl).GetDatabase(mongoUrl.DatabaseName);
-			options.UseMongoDb().UseDatabase(openIddictDb);
+			authBuilder.AddDiscord(options =>
+			{
+				options.ClientId = config.DiscordClientId;
+				options.ClientSecret = config.DiscordClientSecret;
 
-			options.UseQuartz();
-		});
+				// Get avatar
+				options.ClaimActions.MapCustomJson("urn:discord:avatar:url", user =>
+					string.Format(
+						CultureInfo.InvariantCulture,
+						"https://cdn.discordapp.com/avatars/{0}/{1}.{2}",
+						user.GetString("id"),
+						user.GetString("avatar"),
+						user.GetString("avatar")?.StartsWith("a_") == true ? "gif" : "png"));
+			});
+		}
 
 		IdentityBuilder ident = self.AddIdentityMongoDbProvider<ApplicationUser, ApplicationRole, ObjectId>(
 			identity =>
 			{
 				identity.SignIn.RequireConfirmedAccount = false;
+				identity.SignIn.RequireConfirmedEmail = false;
+				identity.SignIn.RequireConfirmedPhoneNumber = false;
 				identity.Password.RequireNonAlphanumeric = false;
 				identity.Password.RequiredLength = 4;
 				identity.Password.RequiredUniqueChars = 0;
@@ -58,48 +68,6 @@ public static class ServiceCollectionExtensions
 			});
 
 		ident.AddDefaultUI();
-
-		openIddict.AddClient(options =>
-		{
-			// Note: this sample only uses the authorization code flow,
-			// but you can enable the other flows if necessary.
-			options.AllowAuthorizationCodeFlow();
-			options.AllowClientCredentialsFlow();
-			options.AllowHybridFlow();
-			options.AllowRefreshTokenFlow();
-
-			// Register the signing and encryption credentials used to protect
-			// sensitive data like the state tokens produced by OpenIddict.
-			options.AddDevelopmentEncryptionCertificate().AddDevelopmentSigningCertificate();
-
-			// Register the ASP.NET Core host and configure the ASP.NET Core-specific options.
-			var aspnet = options.UseAspNetCore();
-			aspnet.EnableRedirectionEndpointPassthrough();
-			aspnet.DisableTransportSecurityRequirement();
-
-			// Register the System.Net.Http integration.
-			options.UseSystemNetHttp();
-
-			// Register the Web providers integrations.
-			//
-			// Note: to mitigate mix-up attacks, it's recommended to use a unique redirection endpoint
-			// URI per provider, unless all the registered providers support returning a special "iss"
-			// parameter containing their URL as part of authorization responses. For more information,
-			// see https://datatracker.ietf.org/doc/html/draft-ietf-oauth-security-topics#section-4.4.
-			var providers = options.UseWebProviders();
-			providers.AddDiscord(options =>
-			{
-				string? clientId = config.DiscordClientId;
-				string? clientSecret = config.DiscordClientSecret;
-
-				if (clientId == null || clientSecret == null)
-					throw new Exception("No Discord client Id or Secret set.");
-
-				options.SetClientId(clientId);
-				options.SetClientSecret(clientSecret);
-				options.SetRedirectUri("callback/login/discord");
-			});
-		});
 	}
 }
 
@@ -107,19 +75,12 @@ public static class IHostExtensions
 {
 	public static void UseStudioIdentity(this IHost self)
 	{
-		/*Task.Run(() =>
-		{
-			// If the openIddict db is empty, initialize its indexes.
-			if (openIddictDb.ListCollectionNames().ToEnumerable().Count() <= 0)
-				await OpenIddictFunctions.GenerateIndexes(self.Services);
-		});*/
 	}
 }
 
 public class ServiceCollectionIdentityConfigurator
 {
 	public string? IdentityConnectionString;
-	public string? OpenIddictConnectionString;
 	public string? DiscordClientId;
 	public string? DiscordClientSecret;
 }

@@ -18,7 +18,6 @@ namespace StudioOnline;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
-using Quartz;
 using StudioOnline.DiscordBot;
 using StudioOnline.Utilities;
 using Microsoft.Extensions.Configuration;
@@ -45,20 +44,10 @@ public class Program
 
 		services.AddStudioIdentity(options =>
 		{
-			options.OpenIddictConnectionString = builder.Configuration.GetConnectionString("OpenIddict");
 			options.IdentityConnectionString = builder.Configuration.GetConnectionString("Identity");
 			options.DiscordClientId = builder.Configuration["StudioOnline_DiscordClientId"];
 			options.DiscordClientSecret = builder.Configuration["StudioOnline_DiscordClientSecret"];
 		});
-
-		services.AddQuartz(options =>
-		{
-			options.UseSimpleTypeLoader();
-			options.UseInMemoryStore();
-		});
-
-		// Register the Quartz.NET service and configure it to block shutdown until jobs are complete.
-		services.AddQuartzHostedService(options => options.WaitForJobsToComplete = true);
 
 		WebApplication app = builder.Build();
 

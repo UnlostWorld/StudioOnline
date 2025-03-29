@@ -14,6 +14,7 @@
   </PropertyGroup>
 
 	<ItemGroup>
+		<PackageReference Include="AspNet.Security.OAuth.Discord" Version="9.2.0" />
 		<PackageReference Include="AspNetCore.Identity.Mongo" Version="10.1.0" />
 		<PackageReference Include="Discord.Net" Version="3.17.2" />
 		<PackageReference Include="Microsoft.AspNetCore.Identity.UI" Version="9.0.3" />
@@ -23,13 +24,6 @@
 		</PackageReference>
 		<PackageReference Include="Microsoft.VisualStudio.Web.CodeGeneration.Design" Version="9.0.0" />
 		<PackageReference Include="MongoDB.Driver" Version="3.2.1" />
-		<PackageReference Include="OpenIddict.AspNetCore" Version="6.1.1" />
-		<PackageReference Include="OpenIddict.Client" Version="6.1.1" />
-		<PackageReference Include="OpenIddict.MongoDb" Version="6.1.1" />
-		<PackageReference Include="OpenIddict.Quartz" Version="6.1.1" />
-		<PackageReference Include="Quartz" Version="3.14.0" />
-		<PackageReference Include="Quartz.AspNetCore" Version="3.14.0" />
-		<PackageReference Include="Quartz.Extensions.DependencyInjection" Version="3.14.0" />
 		<PackageReference Include="StyleCop.Analyzers.Unstable" Version="1.2.0.556">
 			<PrivateAssets>all</PrivateAssets>
 			<IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
