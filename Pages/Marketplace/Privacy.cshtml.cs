@@ -15,11 +15,9 @@
 
 namespace StudioOnline.Pages.Marketplace;
 
-using Microsoft.Extensions.Logging;
-using StudioOnline;
+using Microsoft.AspNetCore.Mvc.RazorPages;
 
-public class PrivacyModel(ILogger<PrivacyModel> log)
-	: PageModelBase(log)
+public class PrivacyModel : PageModel
 {
 	public void OnGet()
 	{

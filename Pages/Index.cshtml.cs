@@ -15,10 +15,9 @@
 
 namespace StudioOnline.Pages;
 
-using Microsoft.Extensions.Logging;
+using Microsoft.AspNetCore.Mvc.RazorPages;
 
-public class IndexModel(ILogger<IndexModel> log)
-	: PageModelBase(log)
+public class IndexModel : PageModel
 {
 	public void OnGet()
 	{

@@ -67,7 +67,7 @@ public static class ServiceCollectionExtensions
 				mongo.ConnectionString = config.IdentityConnectionString;
 			});
 
-		ident.AddDefaultUI();
+		////ident.AddDefaultUI();
 	}
 }
 

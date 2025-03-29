@@ -1,5 +1,8 @@
-﻿@using Microsoft.AspNetCore.Identity
+﻿@using Microsoft.AspNetCore.Authentication
+@using Microsoft.AspNetCore.Identity
 @using StudioOnline.Identity
+@using System.Collections
+
 @inject SignInManager<ApplicationUser> SignInManager
 @inject UserManager<ApplicationUser> UserManager
 
@@ -10,15 +13,25 @@
         <a  class="nav-link text-dark" asp-area="Identity" asp-page="/Account/Manage/Index" title="Manage">Hello @User.Identity?.Name!</a>
     </li>
     <li class="nav-item">
-        <form class="form-inline" asp-area="Identity" asp-page="/Account/Logout" asp-route-returnUrl="@Url.Page("/Index", new { area = "" })">
-            <button  type="submit" class="nav-link btn btn-link text-dark">Logout</button>
+        <form action="api/Identity/Disconnect">
+            <button type="submit">Logout</button>
         </form>
     </li>
 }
 else
 {
-    <li class="nav-item">
-        <a class="nav-link text-dark" asp-area="Identity" asp-page="/Account/Login">Login</a>
-    </li>
+ 	<form action="api/Identity/Connect" method="post">
+		<div>
+			<p>
+				@{
+					IEnumerable<AuthenticationScheme> schemes = await SignInManager.GetExternalAuthenticationSchemesAsync();
+					foreach (AuthenticationScheme authScheme in schemes)
+					{
+						<button type="submit" name="provider" value="@authScheme.Name" title="Log in using your @authScheme.DisplayName account">@authScheme.DisplayName</button>
+					}
+				}
+				</p>
+		</div>
+	</form>
 }
 </ul>
