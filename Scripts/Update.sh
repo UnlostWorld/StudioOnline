@@ -5,7 +5,5 @@ echo "Stopping Server"
 pkill dotnet
 echo "Getting latest"
 git pull
-echo "building"
-dotnet publish --configuration Release
 echo "Starting Server"
-(dotnet ./bin/publish/StudioOnline.dll </dev/null &>/dev/null &)
+(dotnet run </dev/null &>/dev/null &)
