@@ -6,4 +6,4 @@ pkill dotnet
 echo "Getting latest"
 git pull
 echo "Starting Server"
-(dotnet run </dev/null &>/dev/null &)
+(dotnet run &)
