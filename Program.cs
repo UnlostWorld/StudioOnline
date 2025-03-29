@@ -67,6 +67,7 @@ public class Program
 
 		app.MapStaticAssets();
 		app.MapRazorPages().WithStaticAssets();
+		app.UseStaticFiles();
 
 		app.MapControllerRoute("default", "api/{controller=Home}/{action=Index}");
 		app.MapControllers();
