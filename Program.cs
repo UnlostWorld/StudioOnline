@@ -59,7 +59,7 @@ public class Program
 			app.UseHsts();
 		}
 
-		app.RouteSubdomain("marketplace", "/Marketplace");
+		////app.RouteSubdomain("marketplace", "/Marketplace");
 
 		app.UseRouting();
 		app.UseAuthentication();

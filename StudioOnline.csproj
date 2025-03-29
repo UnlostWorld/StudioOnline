@@ -10,7 +10,7 @@
 		<TreatWarningsAsErrors>true</TreatWarningsAsErrors>
 		<CopyLocalLockFileAssemblies>true</CopyLocalLockFileAssemblies>
 		<GenerateDocumentationFile>True</GenerateDocumentationFile>
-	  <UserSecretsId>ae55fd74-06eb-4567-9b5c-c3fb833ad83e</UserSecretsId>
+	  	<UserSecretsId>ae55fd74-06eb-4567-9b5c-c3fb833ad83e</UserSecretsId>
   </PropertyGroup>
 
 	<ItemGroup>
@@ -32,9 +32,5 @@
 			<PrivateAssets>all</PrivateAssets>
 			<IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
 		</PackageReference>
-	</ItemGroup>
-
-	<ItemGroup>
-	  <Folder Include="Areas\Identity\Data\" />
 	</ItemGroup>
 </Project>
