@@ -18,6 +18,7 @@ using System.Threading.Tasks;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.OutputCaching;
 using Microsoft.Extensions.Logging;
 using StudioOnline.Identity;
 
@@ -27,7 +28,8 @@ using SignInResult = Microsoft.AspNetCore.Identity.SignInResult;
 public class IdentityController(
 	SignInManager<ApplicationUser> signInManager,
 	UserManager<ApplicationUser> userManager,
-	ILogger<IdentityController> logger)
+	ILogger<IdentityController> logger,
+	IOutputCacheStore cache)
 	: Controller
 {
 	[HttpPost]
@@ -78,13 +80,20 @@ public class IdentityController(
 			}
 		}
 
+		// flush the cache to update all pages with the user signed in.
+		await cache.EvictByTagAsync("all", default);
+
 		return new RedirectResult("/");
 	}
 
 	[HttpGet]
 	public async Task<IActionResult> Disconnect()
 	{
-		 await signInManager.SignOutAsync();
-		 return new RedirectResult("/");
+		await signInManager.SignOutAsync();
+
+		// flush the cache to update all pages with the user signed out.
+		await cache.EvictByTagAsync("all", default);
+
+		return new RedirectResult("/");
 	}
 }

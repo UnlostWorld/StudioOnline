@@ -19,7 +19,6 @@ using Microsoft.AspNetCore.Builder;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using StudioOnline.DiscordBot;
-using StudioOnline.Utilities;
 using Microsoft.Extensions.Configuration;
 using StudioOnline.Identity;
 using StudioOnline.Analytics;
@@ -33,6 +32,12 @@ public class Program
 
 		services.AddRazorPages();
 		services.AddControllers();
+
+		services.AddOutputCache(options =>
+		{
+			options.AddBasePolicy(builder => builder.Cache());
+			options.AddBasePolicy(builder => builder.Tag("all"));
+		});
 
 		services.AddSingleton<IAnalyticsService, AnalyticsService>();
 
@@ -61,6 +66,7 @@ public class Program
 
 		////app.RouteSubdomain("marketplace", "/Marketplace");
 
+		app.UseOutputCache();
 		app.UseRouting();
 		app.UseAuthentication();
 		app.UseAuthorization();

@@ -17,6 +17,9 @@ namespace HtmlS;
 
 using Microsoft.AspNetCore.Razor.TagHelpers;
 
+/// <summary>
+/// A type of panel that organises its children into columns and rows.
+/// </summary>
 [HtmlTargetElement("Grid")]
 public class Grid : Panel
 {
