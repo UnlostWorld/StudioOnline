@@ -4,7 +4,7 @@
 		{
 			"label": "Stop Studio Online",
 			"type": "shell",
-			"command": "ssh root@137.184.40.216 \"bash ./StudioOnline/Scripts/Stop.sh\"",
+			"command": "ssh root@${env:STUDIO_SERVER} \"bash ./StudioOnline/Scripts/Stop.sh\"",
 			"problemMatcher": [],
 			"presentation": {
                 "echo": true,
@@ -18,7 +18,7 @@
 		{
 			"label": "Deploy Studio Online",
 			"type": "shell",
-			"command": "ssh root@137.184.40.216 \"bash ./StudioOnline/Scripts/Update.sh\"",
+			"command": "ssh root@${env:STUDIO_SERVER} \"bash ./StudioOnline/Scripts/Update.sh\"",
 			"problemMatcher": [],
 			"presentation": {
                 "echo": true,
@@ -32,7 +32,7 @@
 		{
 			"label": "Connect To Studio Online",
 			"type": "shell",
-			"command": "ssh root@137.184.40.216",
+			"command": "ssh root@${env:STUDIO_SERVER}",
 			"problemMatcher": [],
 			"presentation": {
                 "echo": true,
