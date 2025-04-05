@@ -13,29 +13,26 @@
 //        @@@@@@@@@@@@@@                This software is licensed under the
 //            @@@@  @                  GNU AFFERO GENERAL PUBLIC LICENSE v3
 
-namespace StudioOnline.Pages;
+namespace HtmlS;
 
-using System.Diagnostics;
-using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.Mvc.RazorPages;
-using Microsoft.Extensions.Logging;
+using Microsoft.AspNetCore.Mvc.Razor;
 
-[ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]
-[IgnoreAntiforgeryToken]
-public class ErrorModel : PageModel
+public static class RazorPageBaseExtensions
 {
-	protected readonly ILogger<ErrorModel> Log;
+	private static string nextPageTitle = string.Empty;
 
-	public ErrorModel(ILogger<ErrorModel> logger)
+	public static void UseLayout(this RazorPageBase self, string layout)
 	{
-		this.Log = logger;
+		self.Layout = layout;
 	}
 
-	public string? RequestId { get; set; }
-	public bool ShowRequestId => !string.IsNullOrEmpty(this.RequestId);
-
-	public void OnGet()
+	public static void UsePageTitle(this RazorPageBase self, string title)
 	{
-		this.RequestId = Activity.Current?.Id ?? this.HttpContext.TraceIdentifier;
+		nextPageTitle = title;
+	}
+
+	public static string GetPageTitle(this RazorPageBase self)
+	{
+		return nextPageTitle;
 	}
 }

@@ -5,7 +5,7 @@
 	<meta charset="utf-8" />
 	<meta name="viewport"
 		content="width=device-width, initial-scale=1.0" />
-	<title>@ViewData["Title"]</title>
+	<title>@this.GetPageTitle()</title>
 	<script type="importmap"></script>
 	<link rel="stylesheet"
 		href="~/css/site.css"
@@ -13,69 +13,64 @@
 </head>
 
 <body>
-	<Grid Rows="max, auto, max"
+	<div style="background-image: url('Assets/Background.jpg'); height:100%; background-position: center;" />
+
+	<Grid MaxWidth="{MaxWidth}"
+		Rows="max, auto, max"
+		HorizontalAlignment="@HorizontalAlignments.Center"
 		VerticalAlignment="@VerticalAlignments.Stretch">
 
 		<!-- Header -->
-		<Border Grid.Row="0"
-			Background="{ControlBackgroundBrush}">
-			<Grid Columns="max, auto, max"
-				MaxWidth="{MaxWidth}"
-				Width="100%"
-				Padding="12px, 0px, 12px, 6px"
-				HorizontalAlignment="@HorizontalAlignments.Center">
+		<Border Grid.Row="0" ControlStyle="ToolbarBorder">
+			<Border ControlStyle="ControlBorder">
+				<Grid Columns="max, auto, max">
 
-				<StackPanel Grid.Column="0"
-					Orientation="Horizontal">
-					<Image Source="./Assets/Icon.png"
-						Width="48px"
-						Height="48px" />
+					<StackPanel Grid.Column="0"
+						Orientation="Horizontal">
+						<Image Source="./Assets/Icon.png"
+							Width="48px"
+							Height="48px" />
 
-					@{
-						var isCurrent = Html.IsSelected("/Index");
-						<ToggleButton Path="/Index" IsChecked="@isCurrent">
-							<TextBlock Text="Index"/>
-						</ToggleButton>
-					}
+						@{
+							var isCurrent = Html.IsSelected("/Index");
+							<ToggleButton Path="/Index"
+								IsChecked="@isCurrent">
+								<TextBlock Text="Home" />
+							</ToggleButton>
+						}
 
-				</StackPanel>
+					</StackPanel>
 
-				<!-- TODO: Search box  -->
-				<!--<TextBlock Grid.Column="1"
-					Text="B"
-					Alignment="Center" />-->
+					<!-- TODO: Search box  -->
+					<!--<TextBlock Grid.Column="1"
+						Text="B"
+						Alignment="Center" />-->
 
-				<StackPanel Grid.Column="2"
-					Orientation="Horizontal">
-					<partial name="_LoginPartial" />
-				</StackPanel>
-			</Grid>
+					<StackPanel Grid.Column="2"
+						Orientation="Horizontal">
+						<partial name="_LoginPartial" />
+					</StackPanel>
+				</Grid>
+			</Border>
 		</Border>
 
 		<!-- Body -->
-		<Border Grid.Row="1"
-			MaxWidth="{MaxWidth}"
-			Height="100%"
-			MinHeight="100%"
-			Padding="12px"
-			HorizontalAlignment="@HorizontalAlignments.Center">
-			<main role="main"
-				class="content">
-				@RenderBody()
-			</main>
-		</Border>
+		<div Grid.Row="1"
+			VerticalAlignment="@VerticalAlignments.Stretch"
+			HorizontalAlignment="@HorizontalAlignments.Center"
+			MaxWidth="{MaxWidth}">
 
-		<!-- Footer -->
-		<Border Grid.Row="2"
-			Background="{ControlBackgroundBrush}">
-			<StackPanel Grid.Column="0"
-				Padding="15px"
-				Orientation="Horizontal"
-				MaxWidth="{MaxWidth}"
-				HorizontalAlignment="@HorizontalAlignments.Center">
-				<p>Looking for the <a href="@Html.GetSubdomain("marketplace")">marketplace</a>?</p>
-			</StackPanel>
-		</Border>
+			<Border
+				Margin="12px, 0%, 5px, 0%"
+				padding="12px">
+				<main role="main"
+					class="content">
+					@RenderBody()
+				</main>
+			</Border>
+		</div>
+
+		<!-- Footer would go here -->
 	</Grid>
 
 	<script src="~/lib/jquery/dist/jquery.min.js"></script>

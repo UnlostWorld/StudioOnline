@@ -131,7 +131,7 @@ public class Generator
 		this.PreContent($"<!--  {key}: {message}  -->");
 	}
 
-	/*public void Class(string className)
+	public void Class(string className)
 	{
 		if (this.output == null)
 			return;
@@ -139,7 +139,7 @@ public class Generator
 		TagBuilder tb = new("elementGenerator");
 		tb.AddCssClass(className);
 		this.output.MergeAttributes(tb);
-	}*/
+	}
 
 	public void PreContent(string content)
 	{

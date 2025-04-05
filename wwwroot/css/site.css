@@ -36,6 +36,30 @@ div
 	box-sizing: border-box;
 }
 
+.Border
+{
+	margin: 0px;
+	padding: 3px;
+	border-radius: 6px;
+	background-color: var(--BackgroundBrush);
+}
+
+.ToolbarBorder
+{
+	margin: 0px;
+	padding: 3px;
+	border-radius: 0px 0px 6px 6px;
+	background-color: var(--BackgroundBrush);
+}
+
+.Border .ControlBorder
+{
+	margin: 1px;
+	padding: 3px;
+	border-radius: 6px;
+	background-color: var(--ControlBackgroundBrush);
+}
+
 .Button, .ToggleButton
 {
 	background-color: var(--ControlBackgroundBrush);
@@ -46,6 +70,7 @@ div
 	text-align: center;
 	text-decoration: none;
 	transition: 0.3s;
+	padding: 4px 12px;
 }
 
 .Button:hover, .ToggleButton:hover

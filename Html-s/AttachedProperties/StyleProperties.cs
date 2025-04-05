@@ -13,13 +13,21 @@
 //        @@@@@@@@@@@@@@                This software is licensed under the
 //            @@@@  @                  GNU AFFERO GENERAL PUBLIC LICENSE v3
 
-namespace StudioOnline.Pages;
+namespace HtmlS;
 
-using Microsoft.AspNetCore.Mvc.RazorPages;
+using Microsoft.AspNetCore.Razor.TagHelpers;
 
-public class IndexModel : PageModel
+[HtmlTargetElement("*", Attributes = "ControlStyle")]
+public class StyleProperties : AttachedProperty
 {
-	public void OnGet()
+	[HtmlAttributeName("ControlStyle")]
+	public string? ControlStyle { get; set; }
+
+	protected override void Generate(Generator generator)
 	{
+		if (this.ControlStyle != null)
+		{
+			generator.Class(this.ControlStyle);
+		}
 	}
 }
