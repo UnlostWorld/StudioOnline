@@ -24,16 +24,31 @@ using Microsoft.AspNetCore.Razor.TagHelpers;
 [HtmlTargetElement("Button")]
 public class Button : Panel
 {
-	public ActionHandler? Click { get; set; }
+	public enum HttpMethods
+	{
+		Get,
+		Post,
+	}
+
+	public string? Path { get; set; }
+	public HttpMethods Method { get; set; } = HttpMethods.Get;
+	public string? Name { get; set; } = null;
+	public string? Value { get; set; } = null;
 
 	protected override void Generate(Generator generator)
 	{
 		base.Generate(generator);
-		generator.Class("Button");
 
-		if (this.Click != null)
-		{
-			this.Click.Generate(generator);
-		}
+		generator.HtmlTag("form");
+		generator.Attribute("action", this.Path);
+		generator.Attribute("method", this.Method.ToString().ToLower());
+
+		generator.PreContent($"<button class=\"{this.GetHtmlButtonClasses()}\" type=\"submit\" name=\"{this.Name}\" value=\"{this.Value}\">");
+		generator.PostContent("</button>");
+	}
+
+	protected virtual string GetHtmlButtonClasses()
+	{
+		return "Button";
 	}
 }

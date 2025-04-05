@@ -8,9 +8,7 @@
 
 @if (SignInManager.IsSignedIn(User))
 {
-	var disconnectHandler = new HttpAction("api/Identity/Disconnect");
-
-	<Button Click="@disconnectHandler">
+	<Button Path="api/Identity/Disconnect">
 		<TextBlock Text="@User.Identity?.Name" />
 	</Button>
 }
@@ -19,8 +17,7 @@ else
 	IEnumerable<AuthenticationScheme> schemes = await SignInManager.GetExternalAuthenticationSchemesAsync();
 	foreach (AuthenticationScheme authScheme in schemes)
 	{
-		var connectHandler = new HttpAction("api/Identity/Connect", HttpMethods.Post, "provider", authScheme.Name);
-		<Button Click="@connectHandler">
+		<Button Path="api/Identity/Connect", Method="@Button.HttpMethods.Post" Name="provider" Value="@authScheme.Name">
 			<TextBlock Text="@authScheme.DisplayName" />
 		</Button>
 	}

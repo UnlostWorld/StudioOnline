@@ -32,8 +32,8 @@
 						Height="48px" />
 
 					@{
-						var tabHandler = new HttpAction("/Index");
-						<ToggleButton Click="@tabHandler">
+						var isCurrent = Html.IsSelected("/Index");
+						<ToggleButton Path="/Index" IsChecked="@isCurrent">
 							<TextBlock Text="Index"/>
 						</ToggleButton>
 					}

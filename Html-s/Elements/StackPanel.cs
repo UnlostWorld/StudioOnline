@@ -26,7 +26,6 @@ public class StackPanelHelper : Panel
 	protected override void Generate(Generator generator)
 	{
 		base.Generate(generator);
-		generator.Class("StackPanel");
 
 		if (this.Orientation == "Horizontal")
 		{

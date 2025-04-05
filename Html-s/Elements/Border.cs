@@ -20,9 +20,4 @@ using Microsoft.AspNetCore.Razor.TagHelpers;
 [HtmlTargetElement("Border")]
 public class Border : Panel
 {
-	protected override void Generate(Generator generator)
-	{
-		base.Generate(generator);
-		generator.Class("Border");
-	}
 }

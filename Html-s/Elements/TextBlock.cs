@@ -26,7 +26,6 @@ public class TextBlock : Element
 	protected override void Generate(Generator generator)
 	{
 		base.Generate(generator);
-		generator.Class("TextBlock");
 		generator.HtmlTag("div");
 		generator.HtmlTagMode(TagMode.StartTagAndEndTag);
 		generator.Style("text-align", this.Alignment);

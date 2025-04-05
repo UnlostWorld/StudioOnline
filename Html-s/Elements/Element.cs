@@ -38,6 +38,9 @@ public abstract class ElementBase : TagHelper
 	public override void Process(TagHelperContext context, TagHelperOutput output)
 	{
 		this.generator.Initialize(context, output);
+
+		this.generator.Debug("Type", this.GetType().Name);
+
 		this.Generate(this.generator);
 		this.generator.WriteStyle();
 		base.Process(context, output);
@@ -123,7 +126,12 @@ public class Generator
 		this.styleProperties[key] = value;
 	}
 
-	public void Class(string className)
+	public void Debug(string key, string message)
+	{
+		this.PreContent($"<!--  {key}: {message}  -->");
+	}
+
+	/*public void Class(string className)
 	{
 		if (this.output == null)
 			return;
@@ -131,7 +139,7 @@ public class Generator
 		TagBuilder tb = new("elementGenerator");
 		tb.AddCssClass(className);
 		this.output.MergeAttributes(tb);
-	}
+	}*/
 
 	public void PreContent(string content)
 	{

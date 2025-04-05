@@ -27,9 +27,15 @@ public class ToggleButton : Button
 	[HtmlAttributeName("IsChecked")]
 	public bool IsChecked { get; set; }
 
-	protected override void Generate(Generator generator)
+	protected override string GetHtmlButtonClasses()
 	{
-		base.Generate(generator);
-		generator.Class("ToggleButton");
+		if (this.IsChecked)
+		{
+			return "ToggleButton ToggleButton-Checked";
+		}
+		else
+		{
+			return "ToggleButton";
+		}
 	}
 }

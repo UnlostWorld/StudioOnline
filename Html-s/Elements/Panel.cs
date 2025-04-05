@@ -23,7 +23,6 @@ public class Panel : Element
 	protected override void Generate(Generator generator)
 	{
 		base.Generate(generator);
-		generator.Class("Panel");
 		generator.HtmlTag("div");
 		generator.Style("display", "grid");
 		generator.Style("grid-auto-flow", "row");

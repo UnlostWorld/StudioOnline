@@ -29,7 +29,6 @@ public class Grid : Panel
 	protected override void Generate(Generator generator)
 	{
 		base.Generate(generator);
-		generator.Class("Grid");
 		generator.Style("grid-template-rows", FormatDefinitions(this.Rows));
 		generator.Style("grid-template-columns", FormatDefinitions(this.Columns));
 	}
@@ -64,7 +63,6 @@ public class GridAttachedProperties : AttachedProperty
 	protected override void Generate(Generator generator)
 	{
 		base.Generate(generator);
-		generator.Class("GridItem");
 		generator.Style("grid-row", $"{this.Row + 1} / span {this.RowSpan}");
 		generator.Style("grid-column", $"{this.Column + 1} / span {this.ColumnSpan}");
 	}

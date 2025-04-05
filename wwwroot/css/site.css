@@ -35,3 +35,26 @@ div
 {
 	box-sizing: border-box;
 }
+
+.Button, .ToggleButton
+{
+	background-color: var(--ControlBackgroundBrush);
+	border-radius: 4px;
+	border: none;
+	color: var(--ForegroundLightBrush);
+	margin: 2px;
+	text-align: center;
+	text-decoration: none;
+	transition: 0.3s;
+}
+
+.Button:hover, .ToggleButton:hover
+{
+	background-color: var(--ControlHighlightBrush);
+	color: var(--ControlForegroundHighlightBrush);
+}
+
+.ToggleButton-Checked
+{
+	color: var(--TrimBrush);
+}
