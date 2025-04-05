@@ -15,9 +15,30 @@
 
 namespace HtmlS;
 
-public enum HorizontalAlignment
+using System;
+using Microsoft.AspNetCore.Razor.TagHelpers;
+
+[HtmlTargetElement("StackPanel")]
+public class StackPanelHelper : Panel
 {
-	Left,
-	Center,
-	Right,
+	public string Orientation { get; set; } = "Horizontal";
+
+	protected override void Generate(Generator generator)
+	{
+		base.Generate(generator);
+		generator.Class("StackPanel");
+
+		if (this.Orientation == "Horizontal")
+		{
+			generator.Style("grid-auto-flow", "column");
+		}
+		else if (this.Orientation == "Vertical")
+		{
+			generator.Style("grid-auto-flow", "row");
+		}
+		else
+		{
+			throw new Exception($"Invalid Orientation: {this.Orientation}");
+		}
+	}
 }

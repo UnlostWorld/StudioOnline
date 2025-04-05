@@ -15,29 +15,25 @@
 
 namespace HtmlS;
 
-using System;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Razor.TagHelpers;
 
-[HtmlTargetElement("StackPanel")]
-public class StackPanelHelper : Panel
+/// <summary>
+/// A button is a control that recieves mouse click events.
+/// </summary>
+[HtmlTargetElement("Button")]
+public class Button : Panel
 {
-	public string Orientation { get; set; } = "Horizontal";
+	public ActionHandler? Click { get; set; }
 
-	protected override void Generate()
+	protected override void Generate(Generator generator)
 	{
-		base.Generate();
+		base.Generate(generator);
+		generator.Class("Button");
 
-		if (this.Orientation == "Horizontal")
+		if (this.Click != null)
 		{
-			this.Style("grid-auto-flow", "column");
-		}
-		else if (this.Orientation == "Vertical")
-		{
-			this.Style("grid-auto-flow", "row");
-		}
-		else
-		{
-			throw new Exception($"Invalid Orientation: {this.Orientation}");
+			this.Click.Generate(generator);
 		}
 	}
 }

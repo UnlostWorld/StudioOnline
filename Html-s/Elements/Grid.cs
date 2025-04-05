@@ -26,13 +26,12 @@ public class Grid : Panel
 	public string? Rows { get; set; }
 	public string? Columns { get; set; }
 
-	protected override void Generate()
+	protected override void Generate(Generator generator)
 	{
-		base.Generate();
-
-		this.Class("Grid");
-		this.Style("grid-template-rows", FormatDefinitions(this.Rows));
-		this.Style("grid-template-columns", FormatDefinitions(this.Columns));
+		base.Generate(generator);
+		generator.Class("Grid");
+		generator.Style("grid-template-rows", FormatDefinitions(this.Rows));
+		generator.Style("grid-template-columns", FormatDefinitions(this.Columns));
 	}
 
 	private static string? FormatDefinitions(string? input)
@@ -62,10 +61,11 @@ public class GridAttachedProperties : AttachedProperty
 	[HtmlAttributeName("Grid.RowSpan")]
 	public int RowSpan { get; set; } = 1;
 
-	protected override void Generate()
+	protected override void Generate(Generator generator)
 	{
-		this.Class("GridItem");
-		this.Style("grid-row", $"{this.Row + 1} / span {this.RowSpan}");
-		this.Style("grid-column", $"{this.Column + 1} / span {this.ColumnSpan}");
+		base.Generate(generator);
+		generator.Class("GridItem");
+		generator.Style("grid-row", $"{this.Row + 1} / span {this.RowSpan}");
+		generator.Style("grid-column", $"{this.Column + 1} / span {this.ColumnSpan}");
 	}
 }

@@ -1,49 +1,87 @@
-﻿@addTagHelper *, StudioOnline
-
-<!DOCTYPE html>
+﻿<!DOCTYPE html>
 <html lang="en">
 
 <head>
 	<meta charset="utf-8" />
-	<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+	<meta name="viewport"
+		content="width=device-width, initial-scale=1.0" />
 	<title>@ViewData["Title"]</title>
 	<script type="importmap"></script>
-	<link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
+	<link rel="stylesheet"
+		href="~/css/site.css"
+		asp-append-version="true" />
 </head>
 
 <body>
-	<header>
+	<Grid Rows="max, auto, max"
+		VerticalAlignment="@VerticalAlignments.Stretch">
 
-		<Grid Columns="max, auto, max" Background="{--ControlBackgroundBrush}">
+		<!-- Header -->
+		<Border Grid.Row="0"
+			Background="{ControlBackgroundBrush}">
+			<Grid Columns="max, auto, max"
+				MaxWidth="{MaxWidth}"
+				Width="100%"
+				Padding="12px, 0px, 12px, 6px"
+				HorizontalAlignment="@HorizontalAlignments.Center">
 
-			<StackPanel Grid.Column="0" Orientation="Horizontal">
-				<Image Source="./Assets/Icon.png" Width="48px" Height="48px"/>
+				<StackPanel Grid.Column="0"
+					Orientation="Horizontal">
+					<Image Source="./Assets/Icon.png"
+						Width="48px"
+						Height="48px" />
 
-				<div class="button @Html.IsSelected("/Index")">
-					<a asp-area="" asp-page="/Index">Home</a>
-				</div>
+					@{
+						var tabHandler = new HttpAction("/Index");
+						<ToggleButton Click="@tabHandler">
+							<TextBlock Text="Index"/>
+						</ToggleButton>
+					}
+
+				</StackPanel>
+
+				<!-- TODO: Search box  -->
+				<!--<TextBlock Grid.Column="1"
+					Text="B"
+					Alignment="Center" />-->
+
+				<StackPanel Grid.Column="2"
+					Orientation="Horizontal">
+					<partial name="_LoginPartial" />
+				</StackPanel>
+			</Grid>
+		</Border>
+
+		<!-- Body -->
+		<Border Grid.Row="1"
+			MaxWidth="{MaxWidth}"
+			Height="100%"
+			MinHeight="100%"
+			Padding="12px"
+			HorizontalAlignment="@HorizontalAlignments.Center">
+			<main role="main"
+				class="content">
+				@RenderBody()
+			</main>
+		</Border>
+
+		<!-- Footer -->
+		<Border Grid.Row="2"
+			Background="{ControlBackgroundBrush}">
+			<StackPanel Grid.Column="0"
+				Padding="15px"
+				Orientation="Horizontal"
+				MaxWidth="{MaxWidth}"
+				HorizontalAlignment="@HorizontalAlignments.Center">
+				<p>Looking for the <a href="@Html.GetSubdomain("marketplace")">marketplace</a>?</p>
 			</StackPanel>
-
-			<TextBlock Grid.Column="1" Text="B" Alignment="Center" />
-
-			<partial Grid.Column="2" name="_LoginPartial" />
-		</Grid>
-
-	</header>
-	<div class="container">
-		<main role="main" class="content">
-			@RenderBody()
-		</main>
-	</div>
-
-	<footer class="content">
-		<p>Looking for the <a href="@Html.GetSubdomain("marketplace")">marketplace</a>?</p>
-		<div class="container">&copy; 2025 - Unlost World</div>
-	</footer>
+		</Border>
+	</Grid>
 
 	<script src="~/lib/jquery/dist/jquery.min.js"></script>
 	<script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
-	<script src="~/js/site.js" asp-append-version="true"></script>
+	<script src="~/js/site.js"
+		asp-append-version="true"></script>
 
 	@await RenderSectionAsync("Scripts", required: false)
 </body>

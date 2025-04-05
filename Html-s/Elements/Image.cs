@@ -22,11 +22,10 @@ public class Image : Element
 {
 	public string? Source { get; set; }
 
-	protected override void Generate()
+	protected override void Generate(Generator generator)
 	{
-		base.Generate();
-
-		this.HtmlTag("img");
-		this.Attribute("src", this.Source);
+		base.Generate(generator);
+		generator.HtmlTag("img");
+		generator.Attribute("src", this.Source);
 	}
 }

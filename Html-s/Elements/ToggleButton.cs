@@ -15,18 +15,21 @@
 
 namespace HtmlS;
 
-/// <summary>
-/// A Panel is an HTMLS element that contains and organises children elements.
-/// </summary>
-public class Panel : Element
-{
-	protected override void Generate()
-	{
-		base.Generate();
+using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Razor.TagHelpers;
 
-		this.Class("Panel");
-		this.HtmlTag("div");
-		this.Style("display", "grid");
-		this.Style("grid-auto-flow", "row");
+/// <summary>
+/// A button is a control that recieves mouse click events.
+/// </summary>
+[HtmlTargetElement("ToggleButton")]
+public class ToggleButton : Button
+{
+	[HtmlAttributeName("IsChecked")]
+	public bool IsChecked { get; set; }
+
+	protected override void Generate(Generator generator)
+	{
+		base.Generate(generator);
+		generator.Class("ToggleButton");
 	}
 }

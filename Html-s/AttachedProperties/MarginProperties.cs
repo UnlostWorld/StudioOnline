@@ -17,27 +17,16 @@ namespace HtmlS;
 
 using Microsoft.AspNetCore.Razor.TagHelpers;
 
-[HtmlTargetElement("*", Attributes = "Background")]
-public class BackgroundTagHelper : AttachedProperty
+[HtmlTargetElement("*", Attributes = "Margin")]
+[HtmlTargetElement("*", Attributes = "Padding")]
+public class MarginProperties : AttachedProperty
 {
-	public string? Background { get; set; }
+	public string? Margin { get; set; }
+	public string? Padding { get; set; }
 
-	protected override void Generate()
+	protected override void Generate(Generator generator)
 	{
-		base.Generate();
-
-		if (this.Background == null)
-			return;
-
-		string value = this.Background;
-
-		// replace {} with var()
-		if (value.StartsWith('{') && value.EndsWith('}'))
-		{
-			value = value.Substring(1, value.Length - 2);
-			value = $"var({value})";
-		}
-
-		this.Style("background", value);
+		generator.Style("margin", this.Margin);
+		generator.Style("padding", this.Padding);
 	}
 }

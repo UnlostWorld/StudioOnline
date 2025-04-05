@@ -23,13 +23,8 @@ using Microsoft.AspNetCore.Razor.TagHelpers;
 
 public abstract class Element : ElementBase
 {
-	public string? Width { get; set; }
-	public string? Height { get; set; }
-
-	protected override void Generate()
+	protected override void Generate(Generator generator)
 	{
-		this.Style("Width", this.Width);
-		this.Style("Height", this.Height);
 	}
 }
 
@@ -38,27 +33,46 @@ public abstract class Element : ElementBase
 /// </summary>
 public abstract class ElementBase : TagHelper
 {
-	private readonly Dictionary<string, string> styleProperties = new();
-	private TagHelperContext? generateContext;
-	private TagHelperOutput? generateOutput;
+	private readonly Generator generator = new();
 
 	public override void Process(TagHelperContext context, TagHelperOutput output)
 	{
-		this.generateContext = context;
-		this.generateOutput = output;
-		this.styleProperties.Clear();
+		this.generator.Initialize(context, output);
+		this.Generate(this.generator);
+		this.generator.WriteStyle();
+		base.Process(context, output);
+	}
 
-		this.Generate();
+	protected abstract void Generate(Generator generator);
+}
+
+public class Generator
+{
+	private readonly Dictionary<string, string> styleProperties = new();
+	private TagHelperContext? context;
+	private TagHelperOutput? output;
+
+	public void Initialize(TagHelperContext context, TagHelperOutput output)
+	{
+		this.context = context;
+		this.output = output;
+		this.styleProperties.Clear();
+	}
+
+	public void WriteStyle()
+	{
+		if (this.output == null)
+			return;
 
 		if (this.styleProperties.Count > 0)
 		{
 			StringBuilder styleBuilder = new();
 
-			output.Attributes.TryGetAttribute("style", out var existingStyle);
+			this.output.Attributes.TryGetAttribute("style", out var existingStyle);
 			if (existingStyle != null)
 			{
 				styleBuilder.Append(existingStyle.Value);
-				output.Attributes.Remove(existingStyle);
+				this.output.Attributes.Remove(existingStyle);
 			}
 
 			foreach((string key, string value) in this.styleProperties)
@@ -69,61 +83,85 @@ public abstract class ElementBase : TagHelper
 				styleBuilder.Append(";");
 			}
 
-			output.Attributes.Add("style", styleBuilder.ToString());
+			this.output.Attributes.Add("style", styleBuilder.ToString());
 		}
-
-		base.Process(context, output);
-
-		this.generateContext = null;
-		this.generateOutput = null;
 	}
 
-	protected abstract void Generate();
-
-	protected void HtmlTag(string tag)
+	public void HtmlTag(string tag)
 	{
-		if (this.generateOutput == null)
+		if (this.output == null)
 			return;
 
-		this.generateOutput.TagName = tag;
+		this.output.TagName = tag;
 	}
 
-	protected void HtmlTagMode(TagMode mode)
+	public void HtmlTagMode(TagMode mode)
 	{
-		if (this.generateOutput == null)
+		if (this.output == null)
 			return;
 
-		this.generateOutput.TagMode = mode;
+		this.output.TagMode = mode;
 	}
 
-	protected void Style(string key, string? value)
+	public void Style(string key, string? value)
 	{
 		if (string.IsNullOrEmpty(value))
 			return;
 
+		// replace {X} with var(--X)
+		if (value.StartsWith('{') && value.EndsWith('}'))
+		{
+			value = value.Substring(1, value.Length - 2);
+			value = $"var(--{value})";
+		}
+		else
+		{
+			// replace , with ' '
+			value = value.Replace(", ", " ");
+		}
+
 		this.styleProperties[key] = value;
 	}
 
-	protected void Class(string className)
+	public void Class(string className)
 	{
+		if (this.output == null)
+			return;
+
 		TagBuilder tb = new("elementGenerator");
 		tb.AddCssClass(className);
-		this.generateOutput.MergeAttributes(tb);
+		this.output.MergeAttributes(tb);
 	}
 
-	protected void Content(string content)
+	public void PreContent(string content)
 	{
-		if (this.generateOutput == null)
+		if (this.output == null)
 			return;
 
-		this.generateOutput.Content.Append(content);
+		this.output.PreContent.AppendHtml(content);
 	}
 
-	protected void Attribute(string key, string? value)
+	public void Content(string content)
 	{
-		if (value == null || this.generateOutput == null)
+		if (this.output == null)
 			return;
 
-		this.generateOutput.Attributes.Add(new TagHelperAttribute(key, value));
+		this.output.Content.AppendHtml(content);
+	}
+
+	public void PostContent(string content)
+	{
+		if (this.output == null)
+			return;
+
+		this.output.PostContent.AppendHtml(content);
+	}
+
+	public void Attribute(string key, string? value)
+	{
+		if (value == null || this.output == null)
+			return;
+
+		this.output.Attributes.Add(new TagHelperAttribute(key, value));
 	}
 }

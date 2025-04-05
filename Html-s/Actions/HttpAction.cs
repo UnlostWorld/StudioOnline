@@ -15,22 +15,24 @@
 
 namespace HtmlS;
 
-using Microsoft.AspNetCore.Razor.TagHelpers;
-
-[HtmlTargetElement("TextBlock")]
-public class TextBlock : Element
+public enum HttpMethods
 {
-	public string Text { get; set; } = string.Empty;
-	public string Alignment { get; set; } = "Left";
+	Get,
+	Post,
+}
 
-	protected override void Generate()
+public class HttpAction(string path, HttpMethods method = HttpMethods.Get, string? name = null, string? value = null)
+	: ActionHandler
+{
+	public override void Generate(Generator generator)
 	{
-		base.Generate();
+		base.Generate(generator);
 
-		this.Class("TextBlock");
-		this.HtmlTag("div");
-		this.HtmlTagMode(TagMode.StartTagAndEndTag);
-		this.Style("text-align", this.Alignment);
-		this.Content(this.Text);
+		generator.HtmlTag("form");
+		generator.Attribute("action", path);
+		generator.Attribute("method", method.ToString().ToLower());
+
+		generator.PreContent($"<button type=\"submit\" name=\"{name}\" value=\"{value}\">");
+		generator.PostContent("</button>");
 	}
 }

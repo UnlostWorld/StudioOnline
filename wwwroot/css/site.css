@@ -28,32 +28,10 @@ html
 body
 {
     margin: 0px;
-    margin-bottom: 60px;
+	height: 100vh;
 }
 
-.content
+div
 {
-	padding: 10px;
-	margin: auto;
-	max-width: var(--MaxWidth);
-	background-color: var(--BackgroundBrush);
-}
-
-.button
-{
-    color: var(--ForegroundLightBrush);
-    margin: 2px;
-    border-radius: 6px;
-    background-color: transparent;
-    transition: background-color .15s ease-in;
-}
-
-.button:hover
-{
-    background-color: var(--ControlHighlightBrush);
-}
-
-.button.active
-{
-    color: var(--TrimBrush);
+	box-sizing: border-box;
 }
