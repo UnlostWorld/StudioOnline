@@ -29,6 +29,7 @@ public interface IRepositoryService
 {
 	Task<IEnumerable<RepositoryPlugin>> GetPlugins();
 	Task AddOrUpdate(RepositoryPlugin plugin);
+	Task CountDownload(string pluginName);
 }
 
 public class RepositoryService : IRepositoryService
@@ -65,6 +66,21 @@ public class RepositoryService : IRepositoryService
 		plugin.LastUpdate = (long)t.TotalSeconds;
 
 		await this.Plugins.ReplaceOneAsync(filter, plugin, op);
+	}
+
+	public async Task CountDownload(string pluginName)
+	{
+		FilterDefinition<RepositoryPlugin> filter = Builders<RepositoryPlugin>.Filter.Eq(r => r.InternalName, pluginName);
+		ReplaceOptions op = new();
+		op.IsUpsert = true;
+
+		IAsyncCursor<RepositoryPlugin> pluginsCursor = await this.Plugins.FindAsync(filter);
+		List<RepositoryPlugin> plugins = await pluginsCursor.ToListAsync();
+		foreach(RepositoryPlugin plugin in plugins)
+		{
+			plugin.DownloadCount++;
+			await this.Plugins.ReplaceOneAsync(filter, plugin, op);
+		}
 	}
 }
 

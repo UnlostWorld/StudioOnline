@@ -41,17 +41,20 @@ public class RepositoryController(IRepositoryService repositoryService)
 
 [Route("plugins/{pluginName}")]
 [OutputCache(Tags = ["repository"], Duration = 60, NoStore = true)]
-public class RepositoryDownloadController()
+public class RepositoryDownloadController(IRepositoryService repositoryService)
 	: Controller
 {
 	[HttpGet]
-	public IActionResult Get([FromRoute]string pluginName)
+	public async Task<IActionResult> Get([FromRoute]string pluginName)
 	{
 		try
 		{
 			FileStream fs = System.IO.File.OpenRead($"{pluginName}-latest.zip");
 			string contentType = "APPLICATION/octet-stream";
 			string fileName = $"{pluginName}.zip";
+
+			await repositoryService.CountDownload(pluginName);
+
 			return this.File(fs, contentType, fileName);
 		}
 		catch (Exception)
