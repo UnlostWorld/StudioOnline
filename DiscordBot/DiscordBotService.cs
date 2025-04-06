@@ -17,6 +17,7 @@ namespace StudioOnline.DiscordBot;
 
 using Discord;
 using Discord.Interactions;
+using Discord.Rest;
 using Discord.WebSocket;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Hosting;
@@ -148,7 +149,9 @@ public class DiscordBotService : IDiscordBotService, IDisposable
 		foreach (Type moduleType in this.Options.Value.InteractionModules)
 			await this.Interactions.AddModuleAsync(moduleType, this.Services);
 
-		await this.Interactions.RegisterCommandsGloballyAsync();
+		IReadOnlyCollection<RestGlobalCommand> commands = await this.Interactions.RegisterCommandsGloballyAsync();
+		this.Log.LogInformation($"Registered {commands.Count} commands");
+
 		await this.Client.SetGameAsync("around");
 	}
 

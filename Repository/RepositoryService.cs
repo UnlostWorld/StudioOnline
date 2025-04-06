@@ -15,10 +15,14 @@
 
 namespace StudioOnline.Repository;
 
+using System;
 using System.Collections.Generic;
+using System.Text.Json.Serialization;
 using System.Threading.Tasks;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
+using MongoDB.Bson;
+using MongoDB.Bson.Serialization.Attributes;
 using MongoDB.Driver;
 
 public interface IRepositoryService
@@ -54,20 +58,37 @@ public class RepositoryService : IRepositoryService
 	public async Task AddOrUpdate(RepositoryPlugin plugin)
 	{
 		FilterDefinition<RepositoryPlugin> filter = Builders<RepositoryPlugin>.Filter.Eq(r => r.InternalName, plugin.InternalName);
-		await this.Plugins.ReplaceOneAsync(filter, plugin);
+		ReplaceOptions op = new();
+		op.IsUpsert = true;
+
+		TimeSpan t = DateTime.UtcNow - new DateTime(1970, 1, 1);
+		plugin.LastUpdate = (long)t.TotalSeconds;
+
+		await this.Plugins.ReplaceOneAsync(filter, plugin, op);
 	}
 }
 
 public class RepositoryPlugin
 {
+	[JsonIgnore]
+	[BsonIgnoreIfDefault]
+	[BsonElement("_id")]
+	public ObjectId? ObjectId { get; set; }
+
 	public string? Author { get; set; }
 	public string? Name { get; set; }
+	public string? Punchline { get; set; }
 	public string? InternalName { get; set; }
 	public string? Description { get; set; }
 	public string? AssemblyVersion { get; set; }
 	public string? RepoUrl { get; set; }
 	public string? ApplicableVersion { get; set; }
 	public int? DalamudApiLevel { get; set; }
+	public int? TestingDalamudApiLevel { get; set; }
+	public string? IsHide { get; set; }
+	public string? IsTestingExclusive { get; set; }
+	public int? DownloadCount { get; set; } = 0;
+	public long? LastUpdate { get; set; }
 	public List<string> Tags { get; set; } = new();
 	public string? IconUrl { get; set; }
 	public string? DownloadLinkInstall { get; set; }

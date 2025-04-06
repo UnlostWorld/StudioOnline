@@ -19,8 +19,10 @@ using System.Collections.Generic;
 using System.Text.Json;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.OutputCaching;
 
 [Route("plugins")]
+[OutputCache(Tags = ["repository"])]
 public class RepositoryController(IRepositoryService repositoryService)
 	: Controller
 {
@@ -28,7 +30,9 @@ public class RepositoryController(IRepositoryService repositoryService)
 	public async Task<IActionResult> Get()
 	{
 		IEnumerable<RepositoryPlugin> plugins = await repositoryService.GetPlugins();
-		string json = JsonSerializer.Serialize(plugins);
+		JsonSerializerOptions op = new();
+		op.WriteIndented = true;
+		string json = JsonSerializer.Serialize(plugins, op);
 		return this.Content(json);
 	}
 }

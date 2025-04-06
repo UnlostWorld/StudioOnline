@@ -19,9 +19,10 @@ using System.Text.Json;
 using System.Threading.Tasks;
 using Discord;
 using Discord.Interactions;
+using Microsoft.AspNetCore.OutputCaching;
 using StudioOnline.Repository;
 
-public class PluginsCommandModule(IRepositoryService repository)
+public class PluginsCommandModule(IRepositoryService repository, IOutputCacheStore cache)
 	: InteractionModuleBase<SocketInteractionContext>
 {
 	[CommandContextType(InteractionContextType.Guild)]
@@ -37,6 +38,10 @@ public class PluginsCommandModule(IRepositoryService repository)
 		}
 
 		await repository.AddOrUpdate(plugin);
+
+		// flush the cache so that plugin list will update.
+		await cache.EvictByTagAsync("repository", default);
+
 		await this.RespondAsync("Done", ephemeral: true);
 	}
 }
