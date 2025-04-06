@@ -22,6 +22,7 @@ using StudioOnline.DiscordBot;
 using Microsoft.Extensions.Configuration;
 using StudioOnline.Identity;
 using StudioOnline.Analytics;
+using StudioOnline.Repository;
 
 public class Program
 {
@@ -46,6 +47,7 @@ public class Program
 			options.SetConnectionString(builder.Configuration.GetConnectionString("DiscordBot"));
 			options.AddInteractionModule<EchoCommandModule>();
 			options.AddInteractionModule<ErrorCommandModule>();
+			options.AddInteractionModule<PluginsCommandModule>();
 		});
 
 		services.AddStudioIdentity(options =>
@@ -53,6 +55,11 @@ public class Program
 			options.IdentityConnectionString = builder.Configuration.GetConnectionString("Identity");
 			options.DiscordClientId = builder.Configuration["StudioOnline_DiscordClientId"];
 			options.DiscordClientSecret = builder.Configuration["StudioOnline_DiscordClientSecret"];
+		});
+
+		services.AddPluginRepository(options =>
+		{
+			options.SetConnectionString(builder.Configuration.GetConnectionString("PluginRepository"));
 		});
 
 		WebApplication app = builder.Build();

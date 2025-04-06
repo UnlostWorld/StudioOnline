@@ -15,43 +15,28 @@
 
 namespace StudioOnline.DiscordBot;
 
-using System;
+using System.Text.Json;
 using System.Threading.Tasks;
 using Discord;
 using Discord.Interactions;
-using StudioOnline.Analytics;
+using StudioOnline.Repository;
 
-public class ErrorCommandModule(IDiscordBotService bot, IAnalyticsService analytics)
+public class PluginsCommandModule(IRepositoryService repository)
 	: InteractionModuleBase<SocketInteractionContext>
 {
+	[CommandContextType(InteractionContextType.Guild)]
 	[DefaultMemberPermissions(GuildPermission.Administrator)]
-	[SlashCommand("error-reports-here", "Set the output channel for error reports")]
-	public async Task ErrorReportsHere()
+	[SlashCommand("update-plugin", "updates a plugin")]
+	public async Task UpdatePlugin(string json)
 	{
-		var config = await bot.GetGuildConfiguration(this.Context.Guild.Id);
-		config.ErrorReportsChannel = this.Context.Channel.Id;
-		await bot.SetGuildConfiguration(config);
-
-		await this.RespondAsync("Done", ephemeral: true);
-	}
-
-	[DefaultMemberPermissions(GuildPermission.Administrator)]
-	[SlashCommand("generate-test-error", "Generate a test error for the error reporting system")]
-	public async Task GenerateTestError()
-	{
-		ErrorReport report = new();
-
-		try
+		RepositoryPlugin? plugin = JsonSerializer.Deserialize<RepositoryPlugin>(json);
+		if (plugin == null)
 		{
-			throw new Exception("A Test Error, generated server-side.");
-		}
-		catch (Exception ex)
-		{
-			report.Message = ex.Message;
-			report.LogFile = "A Test error log file. \n\n" + ex.StackTrace;
+			await this.RespondAsync("Invalid plugin json", ephemeral: true);
+			return;
 		}
 
-		await analytics.Report(report);
+		await repository.AddOrUpdate(plugin);
 		await this.RespondAsync("Done", ephemeral: true);
 	}
 }

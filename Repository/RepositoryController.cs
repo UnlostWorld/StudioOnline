@@ -13,20 +13,22 @@
 //        @@@@@@@@@@@@@@                This software is licensed under the
 //            @@@@  @                  GNU AFFERO GENERAL PUBLIC LICENSE v3
 
-namespace StudioOnline.DiscordBot;
+namespace StudioOnline.Repository;
 
+using System.Collections.Generic;
+using System.Text.Json;
 using System.Threading.Tasks;
-using Discord;
-using Discord.Interactions;
+using Microsoft.AspNetCore.Mvc;
 
-public class EchoCommandModule
-	: InteractionModuleBase<SocketInteractionContext>
+[Route("plugins")]
+public class RepositoryController(IRepositoryService repositoryService)
+	: Controller
 {
-	[DefaultMemberPermissions(GuildPermission.Administrator)]
-	[SlashCommand("echo", "Echo an input")]
-	public async Task Echo(string input)
+	[HttpGet]
+	public async Task<IActionResult> Get()
 	{
-		await this.Context.Channel.SendMessageAsync(input);
-		await this.RespondAsync("Done", ephemeral: true);
+		IEnumerable<RepositoryPlugin> plugins = await repositoryService.GetPlugins();
+		string json = JsonSerializer.Serialize(plugins);
+		return this.Content(json);
 	}
 }

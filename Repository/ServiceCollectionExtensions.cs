@@ -13,20 +13,31 @@
 //        @@@@@@@@@@@@@@                This software is licensed under the
 //            @@@@  @                  GNU AFFERO GENERAL PUBLIC LICENSE v3
 
-namespace StudioOnline.DiscordBot;
+namespace StudioOnline.Repository;
 
-using System.Threading.Tasks;
-using Discord;
-using Discord.Interactions;
+using Microsoft.Extensions.DependencyInjection;
+using System;
 
-public class EchoCommandModule
-	: InteractionModuleBase<SocketInteractionContext>
+public static class ServiceCollectionExtensions
 {
-	[DefaultMemberPermissions(GuildPermission.Administrator)]
-	[SlashCommand("echo", "Echo an input")]
-	public async Task Echo(string input)
+	public static void AddPluginRepository(this IServiceCollection self, Action<ServiceCollectionRepositoryConfigurator>? configure = null)
 	{
-		await this.Context.Channel.SendMessageAsync(input);
-		await this.RespondAsync("Done", ephemeral: true);
+		self.AddOptions();
+		self.AddSingleton<IRepositoryService, RepositoryService>();
+
+		if (configure != null)
+		{
+			configure(new ServiceCollectionRepositoryConfigurator(self));
+		}
 	}
+}
+
+public class ServiceCollectionRepositoryConfigurator(IServiceCollection services)
+{
+	public void SetConnectionString(string? value) => services.Configure<RepositoryOptions>(options => options.ConnectionString = value);
+}
+
+public class RepositoryOptions
+{
+	public string? ConnectionString;
 }

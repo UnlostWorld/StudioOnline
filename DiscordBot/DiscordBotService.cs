@@ -149,6 +149,7 @@ public class DiscordBotService : IDiscordBotService, IDisposable
 			await this.Interactions.AddModuleAsync(moduleType, this.Services);
 
 		await this.Interactions.RegisterCommandsGloballyAsync();
+		await this.Client.SetGameAsync("around");
 	}
 
 	private Task OnClientInteractionCreated(SocketInteraction interaction)
