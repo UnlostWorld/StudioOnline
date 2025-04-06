@@ -15,7 +15,9 @@
 
 namespace StudioOnline.Repository;
 
+using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Text.Json;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
@@ -34,5 +36,27 @@ public class RepositoryController(IRepositoryService repositoryService)
 		op.WriteIndented = true;
 		string json = JsonSerializer.Serialize(plugins, op);
 		return this.Content(json);
+	}
+}
+
+[Route("plugins/{pluginName}")]
+[OutputCache(Tags = ["repository"], Duration = 60, NoStore = true)]
+public class RepositoryDownloadController()
+	: Controller
+{
+	[HttpGet]
+	public IActionResult Get([FromRoute]string pluginName)
+	{
+		try
+		{
+			FileStream fs = System.IO.File.OpenRead($"{pluginName}-latest.zip");
+			string contentType = "APPLICATION/octet-stream";
+			string fileName = $"{pluginName}.zip";
+			return this.File(fs, contentType, fileName);
+		}
+		catch (Exception)
+		{
+			return this.StatusCode(404);
+		}
 	}
 }

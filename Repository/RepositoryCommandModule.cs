@@ -13,16 +13,19 @@
 //        @@@@@@@@@@@@@@                This software is licensed under the
 //            @@@@  @                  GNU AFFERO GENERAL PUBLIC LICENSE v3
 
-namespace StudioOnline.DiscordBot;
+namespace StudioOnline.Repository;
 
+using System.IO;
+using System.Net.Http;
 using System.Text.Json;
 using System.Threading.Tasks;
 using Discord;
 using Discord.Interactions;
 using Microsoft.AspNetCore.OutputCaching;
-using StudioOnline.Repository;
 
-public class PluginsCommandModule(IRepositoryService repository, IOutputCacheStore cache)
+#pragma warning disable
+
+public class RepositoryCommandModule(IRepositoryService repository, IOutputCacheStore cache)
 	: InteractionModuleBase<SocketInteractionContext>
 {
 	[CommandContextType(InteractionContextType.Guild)]
@@ -43,5 +46,24 @@ public class PluginsCommandModule(IRepositoryService repository, IOutputCacheSto
 		await cache.EvictByTagAsync("repository", default);
 
 		await this.RespondAsync("Done", ephemeral: true);
+	}
+
+	[CommandContextType(InteractionContextType.Guild)]
+	[DefaultMemberPermissions(GuildPermission.Administrator)]
+	[SlashCommand("upload-plugin", "uploads a new version of a plugin")]
+	public async Task UploadPlugin(string name, IAttachment file)
+	{
+		await this.DeferAsync(true);
+		await this.ModifyOriginalResponseAsync(properties => properties.Content = "Downloading");
+
+		using HttpClient client = new();
+		using HttpResponseMessage response = await client.GetAsync(file.Url);
+		using FileStream fs = File.Create($"{name}-latest.zip");
+		await response.Content.CopyToAsync(fs);
+
+		// flush the cache so that plugin list will update.
+		await cache.EvictByTagAsync("repository", default);
+
+		await this.ModifyOriginalResponseAsync(properties => properties.Content = "Done");
 	}
 }

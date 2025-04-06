@@ -47,7 +47,7 @@ public class Program
 			options.SetConnectionString(builder.Configuration.GetConnectionString("DiscordBot"));
 			options.AddInteractionModule<EchoCommandModule>();
 			options.AddInteractionModule<ErrorCommandModule>();
-			options.AddInteractionModule<PluginsCommandModule>();
+			options.AddInteractionModule<RepositoryCommandModule>();
 		});
 
 		services.AddStudioIdentity(options =>
