@@ -70,7 +70,7 @@ public class ManagementCommandModule(IHostApplicationLifetime lifetime)
 		process.StartInfo = startInfo;
 		process.Start();
 
-		////lifetime.StopApplication();
+		lifetime.StopApplication();
 
 		return Task.CompletedTask;
 	}
