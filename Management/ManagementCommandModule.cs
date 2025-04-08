@@ -63,14 +63,14 @@ public class ManagementCommandModule(IHostApplicationLifetime lifetime)
 	{
 		ProcessStartInfo startInfo = new();
 		startInfo.FileName = "bash";
-		startInfo.Arguments = $"-c \"Scripts/Update.sh\"";
+		startInfo.Arguments = $"Scripts/Update.sh";
 		startInfo.UseShellExecute = true;
 
 		Process process = new();
 		process.StartInfo = startInfo;
 		process.Start();
 
-		lifetime.StopApplication();
+		////lifetime.StopApplication();
 
 		return Task.CompletedTask;
 	}
