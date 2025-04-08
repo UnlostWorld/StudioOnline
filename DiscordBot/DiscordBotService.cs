@@ -28,6 +28,7 @@ using MongoDB.Bson.Serialization.Attributes;
 using MongoDB.Driver;
 using System;
 using System.Collections.Generic;
+using System.Threading;
 using System.Threading.Tasks;
 
 public interface IDiscordBotService
@@ -64,7 +65,8 @@ public class DiscordBotService : IDiscordBotService, IDisposable
 		IServiceProvider services,
 		ILogger<DiscordBotService> log,
 		IConfiguration configuration,
-		IOptions<DiscordBotOptions> options)
+		IOptions<DiscordBotOptions> options,
+		IHostApplicationLifetime lifetime)
 	{
 		this.Services = services;
 		this.Log = log;
@@ -77,6 +79,9 @@ public class DiscordBotService : IDiscordBotService, IDisposable
 		MongoUrl mongoUrl = new MongoUrl(options.Value.ConnectionString);
 		IMongoDatabase database = new MongoClient(mongoUrl).GetDatabase(mongoUrl.DatabaseName);
 		this.GuildConfigurations = database.GetCollection<DiscordBotGuildConfiguration>("Guilds");
+
+		CancellationToken token = lifetime.ApplicationStopping;
+		token.Register(this.OnStop);
 	}
 
 	public IGuild GetGuild(ulong guildId) => this.Client.GetGuild(guildId);
@@ -142,6 +147,11 @@ public class DiscordBotService : IDiscordBotService, IDisposable
 		{
 			this.Log.LogError(ex, "Error starting Discord Bot");
 		}
+	}
+
+	private void OnStop()
+	{
+		this.Client.StopAsync();
 	}
 
 	private async Task OnClientReady()

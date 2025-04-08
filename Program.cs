@@ -23,6 +23,7 @@ using Microsoft.Extensions.Configuration;
 using StudioOnline.Identity;
 using StudioOnline.Analytics;
 using StudioOnline.Repository;
+using StudioOnline.Utilities;
 
 public class Program
 {
@@ -48,6 +49,7 @@ public class Program
 			options.AddInteractionModule<EchoCommandModule>();
 			options.AddInteractionModule<ErrorCommandModule>();
 			options.AddInteractionModule<RepositoryCommandModule>();
+			options.AddInteractionModule<ManagementCommandModule>();
 		});
 
 		services.AddStudioIdentity(options =>
@@ -71,7 +73,7 @@ public class Program
 			app.UseHsts();
 		}
 
-		////app.RouteSubdomain("marketplace", "/Marketplace");
+		app.RouteSubdomain("marketplace", "/Marketplace");
 
 		app.UseOutputCache();
 		app.UseRouting();
