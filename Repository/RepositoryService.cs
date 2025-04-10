@@ -62,8 +62,17 @@ public class RepositoryService : IRepositoryService
 		ReplaceOptions op = new();
 		op.IsUpsert = true;
 
+		int downloadCount = 0;
+		IAsyncCursor<RepositoryPlugin> pluginsCursor = await this.Plugins.FindAsync(filter);
+		List<RepositoryPlugin> plugins = await pluginsCursor.ToListAsync();
+		foreach(RepositoryPlugin otherPlugin in plugins)
+		{
+			downloadCount += otherPlugin.DownloadCount ?? 0;
+		}
+
 		TimeSpan t = DateTime.UtcNow - new DateTime(1970, 1, 1);
 		plugin.LastUpdate = (long)t.TotalSeconds;
+		plugin.DownloadCount = downloadCount;
 
 		await this.Plugins.ReplaceOneAsync(filter, plugin, op);
 	}
