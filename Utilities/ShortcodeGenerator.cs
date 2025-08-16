@@ -29,7 +29,7 @@ public static class ShortCodeGenerator
 	{
 		counter++;
 
-		if (counter > ValidChars.Length)
+		if (counter >= ValidChars.Length)
 			counter = 0;
 
 		DateTime dt = DateTime.UtcNow;
