@@ -22,7 +22,7 @@ using Microsoft.Extensions.Logging;
 public interface ISyncService
 {
 	void Update(string identifier, IPAddress address, int port);
-	bool Get(string identifier, out IPAddress? address, out int? port);
+	bool Status(string identifier, out IPAddress? address, out int? port);
 }
 
 public class SyncService : ISyncService
@@ -47,7 +47,7 @@ public class SyncService : ISyncService
 		this.users[identifier] = entry;
 	}
 
-	public bool Get(string identifier, out IPAddress? address, out int? port)
+	public bool Status(string identifier, out IPAddress? address, out int? port)
 	{
 		bool success = this.users.TryGetValue(identifier, out SyncEntry entry);
 		address = entry.Address;

@@ -27,6 +27,7 @@ public class SyncHeartbeat
 
 public class SyncStatus
 {
+	public string? Identifier { get; set; }
 	public IPAddress? Address { get; set; }
 	public int? Port { get; set; }
 }
@@ -35,23 +36,6 @@ public class SyncStatus
 public class SyncController(ISyncService syncService)
 	: Controller
 {
-	[HttpPost]
-	public IActionResult Test([FromBody] string identifier)
-	{
-		bool valid = syncService.Get(identifier, out var ip, out var port);
-		if (!valid)
-			return this.NotFound();
-
-		SyncStatus status = new();
-		status.Address = ip;
-		status.Port = port;
-
-		JsonSerializerOptions op = new();
-		op.WriteIndented = true;
-		string json = JsonSerializer.Serialize(status, op);
-		return this.Content(json);
-	}
-
 	[HttpPost]
 	public IActionResult Heartbeat([FromBody] SyncHeartbeat heartbeat)
 	{
@@ -65,5 +49,26 @@ public class SyncController(ISyncService syncService)
 		syncService.Update(identifier, ip, port.Value);
 
 		return this.Ok();
+	}
+
+	[HttpPost]
+	public IActionResult Status([FromBody] SyncStatus request)
+	{
+		string? identifier = request.Identifier;
+		if (identifier == null)
+			return this.NotFound();
+
+		bool valid = syncService.Status(identifier, out var ip, out var port);
+		if (!valid)
+			return this.NotFound();
+
+		SyncStatus response = request;
+		response.Address = ip;
+		response.Port = port;
+
+		JsonSerializerOptions op = new();
+		op.WriteIndented = true;
+		string json = JsonSerializer.Serialize(response, op);
+		return this.Content(json);
 	}
 }
