@@ -28,7 +28,7 @@ public class SyncHeartbeat
 public class SyncStatus
 {
 	public string? Identifier { get; set; }
-	public IPAddress? Address { get; set; }
+	public string? Address { get; set; }
 	public int? Port { get; set; }
 }
 
@@ -63,7 +63,7 @@ public class SyncController(ISyncService syncService)
 			return this.NotFound();
 
 		SyncStatus response = request;
-		response.Address = ip;
+		response.Address = ip?.ToString();
 		response.Port = port;
 
 		JsonSerializerOptions op = new();
