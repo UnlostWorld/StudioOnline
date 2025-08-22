@@ -58,13 +58,13 @@ public class SyncController(ISyncService syncService)
 		if (identifier == null)
 			return this.NotFound();
 
-		bool valid = syncService.Status(identifier, out var ip, out var port);
-		if (!valid)
-			return this.NotFound();
-
 		SyncStatus response = request;
-		response.Address = ip?.ToString();
-		response.Port = port;
+		bool valid = syncService.Status(identifier, out var ip, out var port);
+		if (valid)
+		{
+			response.Address = ip?.ToString();
+			response.Port = port;
+		}
 
 		JsonSerializerOptions op = new();
 		op.WriteIndented = true;
