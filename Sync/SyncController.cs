@@ -16,6 +16,7 @@
 namespace StudioOnline.Sync;
 
 using System.Net;
+using System.Text.Json;
 using Microsoft.AspNetCore.Mvc;
 
 public class SyncHeartbeat
@@ -24,14 +25,31 @@ public class SyncHeartbeat
 	public int? Port { get; set; }
 }
 
+public class SyncStatus
+{
+	public IPAddress? Address { get; set; }
+	public int? Port { get; set; }
+}
+
 [Route("Api/[controller]/[action]")]
 public class SyncController(ISyncService syncService)
 	: Controller
 {
-	[HttpGet]
-	public IActionResult Test()
+	[HttpPost]
+	public IActionResult Test([FromBody] string identifier)
 	{
-		return this.Content("Hi");
+		bool valid = syncService.Get(identifier, out var ip, out var port);
+		if (!valid)
+			return this.NotFound();
+
+		SyncStatus status = new();
+		status.Address = ip;
+		status.Port = port;
+
+		JsonSerializerOptions op = new();
+		op.WriteIndented = true;
+		string json = JsonSerializer.Serialize(status, op);
+		return this.Content(json);
 	}
 
 	[HttpPost]

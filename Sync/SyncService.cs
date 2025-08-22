@@ -22,12 +22,13 @@ using Microsoft.Extensions.Logging;
 public interface ISyncService
 {
 	void Update(string identifier, IPAddress address, int port);
+	bool Get(string identifier, out IPAddress? address, out int? port);
 }
 
 public class SyncService : ISyncService
 {
 	protected readonly ILogger Log;
-	private readonly Dictionary<string, (IPAddress, int)> users = new();
+	private readonly Dictionary<string, SyncEntry> users = new();
 
 	public SyncService(ILogger<SyncService> log)
 	{
@@ -37,6 +38,26 @@ public class SyncService : ISyncService
 
 	public void Update(string identifier, IPAddress address, int port)
 	{
-		this.users[identifier] = (address, port);
+		if (!this.users.ContainsKey(identifier))
+			this.users.Add(identifier, default);
+
+		SyncEntry entry = this.users[identifier];
+		entry.Address = address;
+		entry.Port = port;
+		this.users[identifier] = entry;
+	}
+
+	public bool Get(string identifier, out IPAddress? address, out int? port)
+	{
+		bool success = this.users.TryGetValue(identifier, out SyncEntry entry);
+		address = entry.Address;
+		port = entry.Port;
+		return success;
+	}
+
+	public struct SyncEntry
+	{
+		public IPAddress Address;
+		public int Port;
 	}
 }
