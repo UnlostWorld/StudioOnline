@@ -16,7 +16,9 @@
 namespace StudioOnline.Sync;
 
 using System.Net;
+using DnsClient.Internal;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Logging;
 
 public class SyncHeartbeat
 {
@@ -25,9 +27,15 @@ public class SyncHeartbeat
 }
 
 [Route("Api/[controller]/[action]")]
-public class SyncController(ISyncService syncService)
+public class SyncController(ISyncService syncService, ILogger<SyncController> logger)
 	: Controller
 {
+	[HttpGet]
+	public IActionResult Test()
+	{
+		return this.Content("Hi");
+	}
+
 	[HttpPost]
 	public IActionResult Heartbeat([FromBody] SyncHeartbeat heartbeat)
 	{
@@ -36,7 +44,10 @@ public class SyncController(ISyncService syncService)
 		int? port = heartbeat.Port;
 
 		if (identifier == null || ip == null || port == null)
+		{
+			logger.LogInformation($"Bad heartbeat: {identifier} {ip} {port}");
 			return this.BadRequest();
+		}
 
 		syncService.Update(identifier, ip, port.Value);
 

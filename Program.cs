@@ -24,7 +24,6 @@ using StudioOnline.Identity;
 using StudioOnline.Analytics;
 using StudioOnline.Repository;
 using StudioOnline.Utilities;
-using StudioOnline.Sync;
 
 public class Program
 {
@@ -43,7 +42,7 @@ public class Program
 		});
 
 		services.AddSingleton<IAnalyticsService, AnalyticsService>();
-		services.AddSingleton<ISyncService, SyncService>();
+		services.AddSingleton<IAnalyticsService, AnalyticsService>();
 
 		services.AddDiscordBot(options =>
 		{
