@@ -38,7 +38,5 @@ public class SyncService : ISyncService
 	public void Update(string identifier, IPAddress address, int port)
 	{
 		this.users[identifier] = (address, port);
-
-		this.Log.LogInformation($"User heartbeat: {identifier} -> {address}:{port}");
 	}
 }

@@ -44,10 +44,7 @@ public class SyncController(ISyncService syncService, ILogger<SyncController> lo
 		int? port = heartbeat.Port;
 
 		if (identifier == null || ip == null || port == null)
-		{
-			logger.LogInformation($"Bad heartbeat: {identifier} {ip} {port}");
 			return this.BadRequest();
-		}
 
 		syncService.Update(identifier, ip, port.Value);
 
