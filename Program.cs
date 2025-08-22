@@ -25,6 +25,7 @@ using StudioOnline.Analytics;
 using StudioOnline.Repository;
 using StudioOnline.Utilities;
 using StudioOnline.Sync;
+using Microsoft.AspNetCore.HttpOverrides;
 
 public class Program
 {
@@ -91,6 +92,10 @@ public class Program
 
 		app.UseDiscordBot();
 		app.UseStudioIdentity();
+
+		ForwardedHeadersOptions forwardedHeaders = new();
+		forwardedHeaders.ForwardedHeaders = ForwardedHeaders.XForwardedFor | ForwardedHeaders.XForwardedProto;
+		app.UseForwardedHeaders(forwardedHeaders);
 
 		app.Run();
 	}
