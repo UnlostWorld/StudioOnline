@@ -24,14 +24,21 @@ public interface ISyncService
 	void Update(string identifier, IPAddress address, int port);
 }
 
-public class SyncService(ILogger<SyncService> log) : ISyncService
+public class SyncService : ISyncService
 {
+	protected readonly ILogger Log;
 	private readonly Dictionary<string, (IPAddress, int)> users = new();
+
+	public SyncService(ILogger<SyncService> log)
+	{
+		this.Log = log;
+		this.Log.LogInformation("Sync service online");
+	}
 
 	public void Update(string identifier, IPAddress address, int port)
 	{
 		this.users[identifier] = (address, port);
 
-		log.LogInformation($"User heartbeat: {identifier} -> {address}:{port}");
+		this.Log.LogInformation($"User heartbeat: {identifier} -> {address}:{port}");
 	}
 }
