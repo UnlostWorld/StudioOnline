@@ -16,9 +16,7 @@
 namespace StudioOnline.Sync;
 
 using System.Net;
-using DnsClient.Internal;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.Extensions.Logging;
 
 public class SyncHeartbeat
 {
@@ -27,7 +25,7 @@ public class SyncHeartbeat
 }
 
 [Route("Api/[controller]/[action]")]
-public class SyncController(ISyncService syncService, ILogger<SyncController> logger)
+public class SyncController(ISyncService syncService)
 	: Controller
 {
 	[HttpGet]
