@@ -22,14 +22,16 @@ using Microsoft.AspNetCore.Mvc;
 public class SyncHeartbeat
 {
 	public string? Identifier { get; set; }
-	public int? Port { get; set; }
+	public string? LocalAddress { get; set; }
+	public ushort Port { get; set; }
 }
 
 public class SyncStatus
 {
 	public string? Identifier { get; set; }
 	public string? Address { get; set; }
-	public int? Port { get; set; }
+	public string? LocalAddress { get; set; }
+	public ushort Port { get; set; }
 }
 
 [Route("Api/[controller]/[action]")]
@@ -41,12 +43,14 @@ public class SyncController(ISyncService syncService)
 	{
 		string? identifier = heartbeat.Identifier;
 		IPAddress? ip = this.HttpContext.Connection.RemoteIpAddress;
-		int? port = heartbeat.Port;
+		IPAddress? localip = null;
+		IPAddress.TryParse(heartbeat.LocalAddress, out localip);
+		ushort port = heartbeat.Port;
 
-		if (identifier == null || ip == null || port == null)
+		if (identifier == null || ip == null || port == 0)
 			return this.BadRequest();
 
-		syncService.Update(identifier, ip, port.Value);
+		syncService.Update(identifier, ip, localip, port);
 
 		return this.Ok();
 	}
@@ -59,10 +63,15 @@ public class SyncController(ISyncService syncService)
 			return this.NotFound();
 
 		SyncStatus response = request;
-		bool valid = syncService.Status(identifier, out var ip, out var port);
+		bool valid = syncService.Status(
+			identifier,
+			out var address,
+			out var localAddress,
+			out var port);
 		if (valid)
 		{
-			response.Address = ip?.ToString();
+			response.Address = address?.ToString();
+			response.LocalAddress = localAddress?.ToString();
 			response.Port = port;
 		}
 

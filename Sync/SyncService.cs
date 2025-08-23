@@ -21,8 +21,8 @@ using Microsoft.Extensions.Logging;
 
 public interface ISyncService
 {
-	void Update(string identifier, IPAddress address, int port);
-	bool Status(string identifier, out IPAddress? address, out int? port);
+	void Update(string identifier, IPAddress address, IPAddress? localAddress, ushort port);
+	bool Status(string identifier, out IPAddress? address, out IPAddress? localAddress, out ushort port);
 }
 
 public class SyncService : ISyncService
@@ -36,21 +36,23 @@ public class SyncService : ISyncService
 		this.Log.LogInformation("Sync service online");
 	}
 
-	public void Update(string identifier, IPAddress address, int port)
+	public void Update(string identifier, IPAddress address, IPAddress? localAddress, ushort port)
 	{
 		if (!this.users.ContainsKey(identifier))
 			this.users.Add(identifier, default);
 
 		SyncEntry entry = this.users[identifier];
 		entry.Address = address;
+		entry.LocalAddress = localAddress;
 		entry.Port = port;
 		this.users[identifier] = entry;
 	}
 
-	public bool Status(string identifier, out IPAddress? address, out int? port)
+	public bool Status(string identifier, out IPAddress? address, out IPAddress? localAddress, out ushort port)
 	{
 		bool success = this.users.TryGetValue(identifier, out SyncEntry entry);
 		address = entry.Address;
+		localAddress = entry.LocalAddress;
 		port = entry.Port;
 		return success;
 	}
@@ -58,6 +60,7 @@ public class SyncService : ISyncService
 	public struct SyncEntry
 	{
 		public IPAddress Address;
-		public int Port;
+		public IPAddress? LocalAddress;
+		public ushort Port;
 	}
 }
