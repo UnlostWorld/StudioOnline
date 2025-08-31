@@ -58,7 +58,9 @@ public class SyncService : ISyncService
 		port = entry.Port;
 
 		// Entries older than 2 minutes are not valid.
-		if (DateTime.Now - entry.Updated >= TimeSpan.FromSeconds(120))
+		TimeSpan age = DateTime.Now - entry.Updated;
+		this.Log.LogInformation($">> {age}");
+		if (age >= TimeSpan.FromSeconds(120))
 			return false;
 
 		return success;
