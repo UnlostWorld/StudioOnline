@@ -15,6 +15,7 @@
 
 namespace StudioOnline.Sync;
 
+using System;
 using System.Collections.Generic;
 using System.Net;
 using Microsoft.Extensions.Logging;
@@ -45,6 +46,7 @@ public class SyncService : ISyncService
 		entry.Address = address;
 		entry.LocalAddress = localAddress;
 		entry.Port = port;
+		entry.Updated = DateTime.Now;
 		this.users[identifier] = entry;
 	}
 
@@ -54,6 +56,11 @@ public class SyncService : ISyncService
 		address = entry.Address;
 		localAddress = entry.LocalAddress;
 		port = entry.Port;
+
+		// Entries older than 2 minutes are not valid.
+		if (DateTime.Now - entry.Updated >= TimeSpan.FromSeconds(120))
+			return false;
+
 		return success;
 	}
 
@@ -62,5 +69,6 @@ public class SyncService : ISyncService
 		public IPAddress Address;
 		public IPAddress? LocalAddress;
 		public ushort Port;
+		public DateTime Updated;
 	}
 }

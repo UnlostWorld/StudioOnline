@@ -43,14 +43,14 @@ public class SyncController(ISyncService syncService)
 	{
 		string? identifier = heartbeat.Identifier;
 		IPAddress? ip = this.HttpContext.Connection.RemoteIpAddress;
-		IPAddress? localip = null;
-		IPAddress.TryParse(heartbeat.LocalAddress, out localip);
+		IPAddress? localIp = null;
+		IPAddress.TryParse(heartbeat.LocalAddress, out localIp);
 		ushort port = heartbeat.Port;
 
 		if (identifier == null || ip == null || port == 0)
 			return this.BadRequest();
 
-		syncService.Update(identifier, ip, localip, port);
+		syncService.Update(identifier, ip, localIp, port);
 
 		return this.Ok();
 	}
