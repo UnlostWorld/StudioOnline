@@ -42,8 +42,6 @@ public class SyncService : ISyncService
 		if (!this.users.ContainsKey(identifier))
 			this.users.Add(identifier, default);
 
-		this.Log.LogInformation($"Update: {identifier}");
-
 		SyncEntry entry = this.users[identifier];
 		entry.Address = address;
 		entry.LocalAddress = localAddress;
@@ -61,9 +59,7 @@ public class SyncService : ISyncService
 
 		if (success)
 		{
-			// Entries older than 2 minutes are not valid.
 			TimeSpan age = DateTime.UtcNow - entry.Updated;
-			this.Log.LogInformation($"{identifier} >> {age.Minutes} minutes ago");
 			if (age >= TimeSpan.FromSeconds(120))
 			{
 				return false;
