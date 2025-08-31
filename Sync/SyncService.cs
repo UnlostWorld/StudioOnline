@@ -46,7 +46,7 @@ public class SyncService : ISyncService
 		entry.Address = address;
 		entry.LocalAddress = localAddress;
 		entry.Port = port;
-		entry.Updated = DateTime.Now;
+		entry.Updated = DateTime.UtcNow;
 		this.users[identifier] = entry;
 	}
 
@@ -58,8 +58,8 @@ public class SyncService : ISyncService
 		port = entry.Port;
 
 		// Entries older than 2 minutes are not valid.
-		TimeSpan age = DateTime.Now - entry.Updated;
-		this.Log.LogInformation($">> {age}");
+		TimeSpan age = DateTime.UtcNow - entry.Updated;
+		this.Log.LogInformation($">> {age.Minutes}");
 		if (age >= TimeSpan.FromSeconds(120))
 			return false;
 
